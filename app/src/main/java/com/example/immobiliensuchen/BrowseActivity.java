@@ -56,15 +56,16 @@ public class BrowseActivity extends AppCompatActivity {
         boolean boolKauf = getIntent().getBooleanExtra("boolKauf", true);
         readFile();
         String[] aString = sb.toString().split("|");
-        int i1;
+        boolean test = true;
         // search for cityname and creat a list of angebot in this city
-        for( i1 =1; i1 < aString.length ; i1+=6){
+        for( int i1 =1; i1 < aString.length ; i1+=6){
             if(aString[i1] == stadtName){
                 for (String string : aString){
                     switch (counter){
                         case 0: {
                             beitragID = Integer.parseInt(string);
                             counter++;
+                            test = false;
                             break;
                         }
                         case 1:{
@@ -100,10 +101,10 @@ public class BrowseActivity extends AppCompatActivity {
                 }
             }
         }
-        if(i1 > aString.length){
+        if(test){
             Toast t;
             t = Toast.makeText(BrowseActivity.this.getApplicationContext(),
-                    " Stadt nicht gefunden oder kein Angebot in diese Stadt ", Toast.LENGTH_SHORT);
+                    " Stadt nicht gefunden oder es gibt kein Angebot in dieser Stadt ", Toast.LENGTH_SHORT);
             t.show();
 
         }
