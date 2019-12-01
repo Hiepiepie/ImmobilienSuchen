@@ -1,11 +1,13 @@
 package com.example.immobiliensuchen;
 
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ListView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -27,7 +29,7 @@ public class BrowseActivity extends AppCompatActivity {
     int beitragID;
     public int[] images;
 
-    Intent myIntent = getIntent();
+
 
 
 
@@ -42,13 +44,71 @@ public class BrowseActivity extends AppCompatActivity {
         myListview = (ListView) findViewById(R.id.listAngebote);
 
         init();
-        readFile();
+        search();
+
 
     }
     void search(){
-        String stadtName = myIntent.getStringExtra("stadtname");
-        boolean boolMiet = myIntent.getBooleanExtra("boolMiet", false);
-        boolean boolKauf = myIntent.getBooleanExtra("boolKauf", false);
+        int counter = 0;
+        // pass variable from KundenActivity
+        String stadtName = getIntent().getStringExtra("stadtname");
+        boolean boolMiet = getIntent().getBooleanExtra("boolMiet", true);
+        boolean boolKauf = getIntent().getBooleanExtra("boolKauf", true);
+        readFile();
+        String[] aString = sb.toString().split("|");
+        int i1;
+        // search for cityname and creat a list of angebot in this city
+        for( i1 =1; i1 < aString.length ; i1+=6){
+            if(aString[i1] == stadtName){
+                for (String string : aString){
+                    switch (counter){
+                        case 0: {
+                            beitragID = Integer.parseInt(string);
+                            counter++;
+                            break;
+                        }
+                        case 1:{
+                            art = string.charAt(0);
+                            counter++;
+                            break;
+                        }
+                        case 2:{
+                            stadt = string;
+                            counter++;
+                            break;
+                        }
+                        case 3:{
+                            preis = Double.parseDouble(string);
+                            counter++;
+                            break;
+                        }
+                        case 4:{
+                            titel = string;
+                            counter++;
+                            break;
+                        }
+                        case 5: {
+                            beschreibung = string;
+                            counter++;
+                            break;
+                        }
+                        case 6:{
+                            counter = 0;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        if(i1 > aString.length){
+            Toast t;
+            t = Toast.makeText(BrowseActivity.this.getApplicationContext(),
+                    " Stadt nicht gefunden oder kein Angebot in diese Stadt ", Toast.LENGTH_SHORT);
+            t.show();
+
+        }
+
+
 
 
     }
