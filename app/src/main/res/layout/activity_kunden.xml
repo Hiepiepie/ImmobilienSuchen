@@ -53,24 +53,26 @@
         android:text="Stadt"
         android:textSize="18dp" />
 
-    <CheckBox
-        android:id="@+id/KaufCheckbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="389dp"
-        android:text="Ich möchte kaufen" />
-
-    <CheckBox
-        android:id="@+id/MieteCheckbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <RadioGroup
+        android:layout_width="215dp"
+        android:layout_height="102dp"
+        android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="250dp"
-        android:text="Ich möchte mieten" />
+        android:layout_marginStart="110dp"
+        android:layout_marginBottom="237dp" >
 
+        <RadioButton
+            android:id="@+id/MietButton"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="Ich moechte mieten" />
+
+        <RadioButton
+            android:id="@+id/KaufButton"
+            android:layout_width="match_parent"
+            android:layout_height="51dp"
+            android:text="Ich moechte  kaufen" />
+    </RadioGroup>
 
 
 </RelativeLayout>

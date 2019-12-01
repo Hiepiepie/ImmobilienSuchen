@@ -10,9 +10,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".AngebotActivity"
+            android:label="@string/title_activity_angebot"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
             android:name=".BrowseActivity"
             android:label="@string/title_activity_browse"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".AngebotVerwaltenActivity"
             android:label="@string/title_activity_angebot_verwalten"

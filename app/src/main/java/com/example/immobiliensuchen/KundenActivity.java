@@ -5,8 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.RadioButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -15,8 +15,8 @@ import androidx.appcompat.widget.Toolbar;
 public class KundenActivity extends AppCompatActivity {
     private Button suchenButton;
     public static String stadtName;
-    public boolean checkboxKaufen = true;
-    public boolean checkboxMieten = true ;
+    public boolean radioKaufen = false;
+    public boolean radioMieten = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +30,7 @@ public class KundenActivity extends AppCompatActivity {
             public void onClick(View v) {
                 EditText temp =  findViewById(R.id.StadtEditText);
                 stadtName = temp.getText().toString();         // get Cityname
-                onCheckboxClicked();   // set the value of bool , control if searching for Miet oder Kauf Object
+                onRadioButtonClicked();   // set the value of bool , control if searching for Miet oder Kauf Object
 
                 openBrowseActivity();
             }
@@ -39,20 +39,20 @@ public class KundenActivity extends AppCompatActivity {
     public void openBrowseActivity() {
         Intent intent = new Intent(KundenActivity.this, BrowseActivity.class);
         intent.putExtra("stadtname", stadtName);
-        intent.putExtra("boolMiet", checkboxMieten);
-        intent.putExtra("bookKauf", checkboxKaufen);
-        startActivity( intent);
+        intent.putExtra("boolMiet", radioMieten);
+        intent.putExtra("bookKauf", radioKaufen);
+        startActivity(intent);
 
     }
-    public void onCheckboxClicked() {
+    public void onRadioButtonClicked() {
         // Is the view now checked?
-        CheckBox cb1 = (CheckBox) findViewById(R.id.KaufCheckbox);
-        CheckBox cb2 = (CheckBox) findViewById(R.id.MieteCheckbox);
+        RadioButton cb1 = (RadioButton) findViewById(R.id.KaufButton);
+        RadioButton cb2 = (RadioButton) findViewById(R.id.MietButton);
 
         // Check which checkbox was clicked
 
-        if (cb1.isChecked()) checkboxKaufen = true;
-        if (cb2.isChecked()) checkboxMieten = true;
+        if (cb1.isChecked()) radioKaufen = true;
+        if (cb2.isChecked()) radioMieten = true;
 
 
 

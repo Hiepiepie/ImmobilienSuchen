@@ -14,12 +14,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 public class BrowseActivity extends AppCompatActivity {
     Toolbar myAngebote;
     ListView myListview;
     private static final String FILE_NAME = "NZSE.txt";
-    Angebote[] angebotContainer ;
+    static ArrayList<Angebote> angebotContainer = new ArrayList<Angebote>();
 
     public StringBuilder sb = new StringBuilder();
 
@@ -28,7 +29,8 @@ public class BrowseActivity extends AppCompatActivity {
     double preis;
     int beitragID;
     public int[] images;
-
+    // pass variable from KundenActivity
+    String stadtName ;
 
 
 
@@ -43,23 +45,44 @@ public class BrowseActivity extends AppCompatActivity {
         myAngebote = (Toolbar) findViewById(R.id.Angebote);
         myListview = (ListView) findViewById(R.id.listAngebote);
 
+
         init();
         search();
+//         pass variable from KundenActivity
+        boolean boolMiet = getIntent().getBooleanExtra("boolMiet", true);
+        boolean boolKauf = getIntent().getBooleanExtra("boolKauf", true);
+        stadtName = getIntent().getStringExtra("stadtname");
+        for (int i = 0 ; i< angebotContainer.size(); i++){
+            if(boolMiet){
+                for (int j = 0 ; j < angebotContainer.size(); j++ ){
+                    if (angebotContainer.get(i).stadt.equals(stadtName) ){
+//                        ArrayAdapter<Angebote> adapter = new ArrayAdapter<Angebote>(this,android.R.layout.simple_list_item_1,);
+
+
+                    }
+                }
+            }
+            if(boolKauf){
+
+            }
+        }
+
+
 
 
     }
     void search(){
         int counter = 0;
-        // pass variable from KundenActivity
-        String stadtName = getIntent().getStringExtra("stadtname");
-        boolean boolMiet = getIntent().getBooleanExtra("boolMiet", true);
-        boolean boolKauf = getIntent().getBooleanExtra("boolKauf", true);
+
+        stadtName = getIntent().getStringExtra("stadtname");
+        // read data from a file
         readFile();
-        String[] aString = sb.toString().split("|");
+        // split string
+        String[] aString = sb.toString().split("[|]");
         boolean test = true;
         // search for cityname and creat a list of angebot in this city
-        for( int i1 =1; i1 < aString.length ; i1+=6){
-            if(aString[i1] == stadtName){
+        for( int i1 =2; i1 < aString.length ; i1+=7){
+            if(aString[i1].equals(stadtName)){
                 for (String string : aString){
                     switch (counter){
                         case 0: {
@@ -94,6 +117,8 @@ public class BrowseActivity extends AppCompatActivity {
                             break;
                         }
                         case 6:{
+                            Angebote a = new Angebote(beitragID,art,stadt,preis,titel,beschreibung);
+                            angebotContainer.add(a);
                             counter = 0;
                             break;
                         }
@@ -101,12 +126,12 @@ public class BrowseActivity extends AppCompatActivity {
                 }
             }
         }
+        // give notification when cant find any matched city name
         if(test){
             Toast t;
             t = Toast.makeText(BrowseActivity.this.getApplicationContext(),
                     " Stadt nicht gefunden oder es gibt kein Angebot in dieser Stadt ", Toast.LENGTH_SHORT);
             t.show();
-
         }
 
 
@@ -117,16 +142,16 @@ public class BrowseActivity extends AppCompatActivity {
         FileOutputStream fos = null;
         String text = "1|M|Hamburg|300|Titel von Haus 1|Beschreibung beschreibung beschreibung\n" +
                 "beschreibung|\n" +
-                "2|K|Frankfurt|150000|Titel von Haus 2| beschreibung von haus 2|\n" +
-                "3|M|Hamburg|350|Titel von Haus 3| beschreibung von haus 3|\n" +
-                "4|M|Berlin|250|Titel von Haus 4| beschreibung von haus 4|\n" +
-                "5|K|Darmstadt|280000|Titel von Haus 5| beschreibung von haus 5|\n" +
-                "6|M|Darmstadt|350|Titel von Haus 6| beschreibung von haus 6|\n" +
-                "7|K|Kiel|1000000|Titel von Haus 7| beschreibung von haus 7|\n" +
-                "8|K|Armsterdam|250000|Titel von Haus 8| beschreibung von haus 8|\n" +
-                "9|M|Muenchen|400|Titel von Haus 9| beschreibung von haus 9|\n" +
-                "10|M|Stuttgart|500|Titel von Haus 10| beschreibung von haus 10|\n" +
-                "11|M|Koeln|450|Titel von Haus 11| beschreibung von haus 11|\n"
+                "|2|K|Frankfurt|150000|Titel von Haus 2| beschreibung von haus 2|\n" +
+                "|3|M|Hamburg|350|Titel von Haus 3| beschreibung von haus 3|\n" +
+                "|4|M|Berlin|250|Titel von Haus 4| beschreibung von haus 4|\n" +
+                "|5|K|Darmstadt|280000|Titel von Haus 5| beschreibung von haus 5|\n" +
+                "|6|M|Darmstadt|350|Titel von Haus 6| beschreibung von haus 6|\n" +
+                "|7|K|Kiel|1000000|Titel von Haus 7| beschreibung von haus 7|\n" +
+                "|8|K|Armsterdam|250000|Titel von Haus 8| beschreibung von haus 8|\n" +
+                "|9|M|Muenchen|400|Titel von Haus 9| beschreibung von haus 9|\n" +
+                "|10|M|Stuttgart|500|Titel von Haus 10| beschreibung von haus 10|\n" +
+                "|11|M|Koeln|450|Titel von Haus 11| beschreibung von haus 11|"
                 ;
         try {
             fos = openFileOutput(FILE_NAME,MODE_PRIVATE );
