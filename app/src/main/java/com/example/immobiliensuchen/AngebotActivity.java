@@ -15,6 +15,8 @@ public class AngebotActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
 
+
+
     }
 
 }

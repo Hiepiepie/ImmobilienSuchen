@@ -38,7 +38,7 @@ public class BrowseActivity extends AppCompatActivity {
     static ArrayList<Angebote> angebotContainer = new ArrayList<Angebote>();
     ArrayList<String> listTitel = new ArrayList<String>();
     ArrayList<Angebote> myDynamicAngebot = new ArrayList<Angebote>();
-
+    ArrayAdapter<String> myAdapter ;
 
 
 
@@ -60,14 +60,13 @@ public class BrowseActivity extends AppCompatActivity {
         boolean boolKauf = getIntent().getBooleanExtra("boolKauf", false);
         stadtName = getIntent().getStringExtra("stadtname");
 
-
+        listTitel.clear();
+        myAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,listTitel);
+        myAdapter.notifyDataSetChanged();
         createTitelList(boolMiet, boolKauf);
 
         for (int i = 0; i<listTitel.size(); i++){
-            String[] leerList = {""};
-            ArrayAdapter<String> leer = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,leerList);
-            myListview.setAdapter(leer);
-            ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,listTitel);
+            myAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,listTitel);
             myListview.setAdapter(myAdapter);
         }
         myListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -77,6 +76,7 @@ public class BrowseActivity extends AppCompatActivity {
                 Bundle b = new Bundle();
                 b.putSerializable("angebot", myDynamicAngebot.get(position));
                 myIntent.putExtra("angebot", b);
+                startActivity(myIntent);
 
             }
         });
@@ -120,7 +120,7 @@ public class BrowseActivity extends AppCompatActivity {
     void search(){
         int counter = 0;
 
-        stadtName = getIntent().getStringExtra("stadtname");
+        angebotContainer.clear();
         // read data from a file
         readFile();
         // split string

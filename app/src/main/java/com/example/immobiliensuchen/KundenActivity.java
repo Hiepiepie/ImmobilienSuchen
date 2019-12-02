@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -27,9 +28,15 @@ public class KundenActivity extends AppCompatActivity {
         suchenButton = (Button) findViewById(R.id.SuchenButton);
         suchenButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+          public void onClick(View v) {
                 EditText temp =  findViewById(R.id.StadtEditText);
                 stadtName = temp.getText().toString();         // get Cityname
+                if(stadtName == ""){
+                    Toast t;
+                    t = Toast.makeText(KundenActivity.this.getApplicationContext(),
+                            "Stadt Name kann nicht leer sein. Bitte etwas eingeben ", Toast.LENGTH_SHORT);
+                    t.show();
+                }
                 onRadioButtonClicked();   // set the value of bool , control if searching for Miet oder Kauf Object
 
                 openBrowseActivity();
@@ -51,8 +58,14 @@ public class KundenActivity extends AppCompatActivity {
 
         // Check which checkbox was clicked
 
-        if (cb1.isChecked()) radioKaufen = true;
-        if (cb2.isChecked()) radioMieten = true;
+        if (cb1.isChecked()) {
+            radioKaufen = true;
+            radioMieten=false;
+        }
+        if (cb2.isChecked()) {
+            radioKaufen= false;
+            radioMieten = true;
+        }
 
 
 
