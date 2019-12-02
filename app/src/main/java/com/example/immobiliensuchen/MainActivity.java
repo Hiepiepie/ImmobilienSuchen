@@ -6,9 +6,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+
 import androidx.appcompat.app.AppCompatActivity;
 
-class Angebote{
+import java.io.Serializable;
+
+class Angebote implements Serializable{
     int BeitragID;
     char art;
     String stadt;
@@ -17,7 +20,9 @@ class Angebote{
     String beschreibung;
     ImageView image;
 
-    public Angebote(int BeitragID,char art, String stadt, double Preis, String titel, String beschreibung ){
+    public Angebote(int BeitragID,char art, String stadt, double Preis, String titel, String beschreibung )
+
+    {
         this.BeitragID= BeitragID;
         this.art = art;
         this.beschreibung= beschreibung;
@@ -40,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         ImageView img = (ImageView) findViewById(R.id.imageView1);
-        img.setImageResource(R.drawable.home);
+        img.setImageResource(R.drawable.home1);
 
 
         kundenB = (Button) findViewById(R.id.KundenButton);

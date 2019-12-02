@@ -40,7 +40,7 @@ public class KundenActivity extends AppCompatActivity {
         Intent intent = new Intent(KundenActivity.this, BrowseActivity.class);
         intent.putExtra("stadtname", stadtName);
         intent.putExtra("boolMiet", radioMieten);
-        intent.putExtra("bookKauf", radioKaufen);
+        intent.putExtra("boolKauf", radioKaufen);
         startActivity(intent);
 
     }

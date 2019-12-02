@@ -1,7 +1,11 @@
 package com.example.immobiliensuchen;
 
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -20,7 +24,7 @@ public class BrowseActivity extends AppCompatActivity {
     Toolbar myAngebote;
     ListView myListview;
     private static final String FILE_NAME = "NZSE.txt";
-    static ArrayList<Angebote> angebotContainer = new ArrayList<Angebote>();
+
 
     public StringBuilder sb = new StringBuilder();
 
@@ -31,6 +35,9 @@ public class BrowseActivity extends AppCompatActivity {
     public int[] images;
     // pass variable from KundenActivity
     String stadtName ;
+    static ArrayList<Angebote> angebotContainer = new ArrayList<Angebote>();
+    ArrayList<String> listTitel = new ArrayList<String>();
+    ArrayList<Angebote> myDynamicAngebot = new ArrayList<Angebote>();
 
 
 
@@ -42,7 +49,7 @@ public class BrowseActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.Angebote);
         setSupportActionBar(toolbar);
 
-        myAngebote = (Toolbar) findViewById(R.id.Angebote);
+
         myListview = (ListView) findViewById(R.id.listAngebote);
 
 
@@ -50,27 +57,66 @@ public class BrowseActivity extends AppCompatActivity {
         search();
 //         pass variable from KundenActivity
         boolean boolMiet = getIntent().getBooleanExtra("boolMiet", true);
-        boolean boolKauf = getIntent().getBooleanExtra("boolKauf", true);
+        boolean boolKauf = getIntent().getBooleanExtra("boolKauf", false);
         stadtName = getIntent().getStringExtra("stadtname");
-        for (int i = 0 ; i< angebotContainer.size(); i++){
-            if(boolMiet){
-                for (int j = 0 ; j < angebotContainer.size(); j++ ){
-                    if (angebotContainer.get(i).stadt.equals(stadtName) ){
-//                        ArrayAdapter<Angebote> adapter = new ArrayAdapter<Angebote>(this,android.R.layout.simple_list_item_1,);
 
 
-                    }
-                }
-            }
-            if(boolKauf){
+        createTitelList(boolMiet, boolKauf);
 
-            }
+        for (int i = 0; i<listTitel.size(); i++){
+            String[] leerList = {""};
+            ArrayAdapter<String> leer = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,leerList);
+            myListview.setAdapter(leer);
+            ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,listTitel);
+            myListview.setAdapter(myAdapter);
         }
+        myListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent myIntent = new Intent(BrowseActivity.this, AngebotActivity.class);
+                Bundle b = new Bundle();
+                b.putSerializable("angebot", myDynamicAngebot.get(position));
+                myIntent.putExtra("angebot", b);
 
+            }
+        });
 
 
 
     }
+
+
+    protected void createTitelList(boolean boolMiet, boolean boolKauf) {
+        boolean test = true;
+        listTitel.clear();
+        if(boolMiet){
+            for (int j = 0 ; j < angebotContainer.size(); j++ ){
+                if ((angebotContainer.get(j).stadt.equals(stadtName) ) && (angebotContainer.get(j).art == 'M')){
+                     test = false;
+                     listTitel.add(angebotContainer.get(j).titel);
+                     myDynamicAngebot.add(angebotContainer.get(j));
+                }
+            }
+        }
+        if(boolKauf){
+            for (int j = 0 ; j < angebotContainer.size(); j++ ){
+                if ((angebotContainer.get(j).stadt.equals(stadtName)  ) && (angebotContainer.get(j).art == 'K')){
+                    test = false;
+                    listTitel.add(angebotContainer.get(j).titel);
+                    myDynamicAngebot.add(angebotContainer.get(j));
+                }
+            }
+
+        }
+        if(test){
+            Toast t;
+            t = Toast.makeText(BrowseActivity.this.getApplicationContext(),
+                    " Stadt nicht gefunden oder es gibt kein Angebot in dieser Stadt ", Toast.LENGTH_SHORT);
+            t.show();
+        }
+
+    }
+
     void search(){
         int counter = 0;
 
@@ -79,16 +125,16 @@ public class BrowseActivity extends AppCompatActivity {
         readFile();
         // split string
         String[] aString = sb.toString().split("[|]");
-        boolean test = true;
+
         // search for cityname and creat a list of angebot in this city
-        for( int i1 =2; i1 < aString.length ; i1+=7){
-            if(aString[i1].equals(stadtName)){
+//        for( int i1 =2; i1 < aString.length ; i1+=7){
+//                if(aString[i1].equals(stadtName)){
                 for (String string : aString){
                     switch (counter){
                         case 0: {
                             beitragID = Integer.parseInt(string);
                             counter++;
-                            test = false;
+
                             break;
                         }
                         case 1:{
@@ -124,15 +170,10 @@ public class BrowseActivity extends AppCompatActivity {
                         }
                     }
                 }
-            }
-        }
+//            }
+//        }
         // give notification when cant find any matched city name
-        if(test){
-            Toast t;
-            t = Toast.makeText(BrowseActivity.this.getApplicationContext(),
-                    " Stadt nicht gefunden oder es gibt kein Angebot in dieser Stadt ", Toast.LENGTH_SHORT);
-            t.show();
-        }
+
 
 
 

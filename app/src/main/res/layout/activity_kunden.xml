@@ -26,9 +26,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:layout_marginTop="299dp"
-        android:layout_marginEnd="88dp"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="381dp"
+        android:layout_marginEnd="92dp"
         android:autofillHints=""
         android:ems="10"
         android:inputType="textPersonName" />
@@ -39,8 +39,38 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="169dp"
+        android:layout_marginBottom="87dp"
         android:text="Suchen" />
+
+    <RadioGroup
+        android:layout_width="215dp"
+        android:layout_height="102dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="106dp"
+        android:layout_marginBottom="155dp">
+
+        <RadioButton
+            android:id="@+id/MietButton"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="0dp"
+            android:checked="true"
+            android:text="Ich moechte mieten" />
+
+        <RadioButton
+            android:id="@+id/KaufButton"
+            android:layout_width="match_parent"
+            android:layout_height="51dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="0dp"
+            android:layout_marginBottom="3dp"
+            android:text="Ich moechte  kaufen" />
+    </RadioGroup>
 
     <TextView
         android:id="@+id/StadtTextView"
@@ -48,31 +78,21 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="43dp"
-        android:layout_marginTop="310dp"
+        android:layout_marginStart="39dp"
+        android:layout_marginTop="392dp"
         android:text="Stadt"
         android:textSize="18dp" />
 
-    <RadioGroup
-        android:layout_width="215dp"
-        android:layout_height="102dp"
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="250dp"
+        android:layout_height="251dp"
         android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="110dp"
-        android:layout_marginBottom="237dp" >
-
-        <RadioButton
-            android:id="@+id/MietButton"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:text="Ich moechte mieten" />
-
-        <RadioButton
-            android:id="@+id/KaufButton"
-            android:layout_width="match_parent"
-            android:layout_height="51dp"
-            android:text="Ich moechte  kaufen" />
-    </RadioGroup>
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="79dp"
+        android:layout_marginTop="101dp"
+        app:srcCompat="@drawable/home1" />
 
 
 </RelativeLayout>
