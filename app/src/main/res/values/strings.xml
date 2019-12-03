@@ -12,5 +12,9 @@
     <string name="todo">TODO</string>
     <string name="title_activity_browse">BrowseActivity</string>
     <string name="title_activity_angebot">AngebotActivity</string>
+    <string name="titel">Titel</string>
+    <string name="preis">Preis</string>
+    <string name="contact">contact</string>
+    <string name="beschreibung">beschreibung</string>
 
 </resources>

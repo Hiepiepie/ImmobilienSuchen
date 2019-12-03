@@ -19,8 +19,9 @@ class Angebote implements Serializable{
     String titel;
     String beschreibung;
     ImageView image;
+    String email;
 
-    public Angebote(int BeitragID,char art, String stadt, double Preis, String titel, String beschreibung )
+    public Angebote(int BeitragID,char art, String stadt, double Preis, String titel, String email, String beschreibung )
 
     {
         this.BeitragID= BeitragID;
@@ -29,6 +30,7 @@ class Angebote implements Serializable{
         this.titel = titel;
         this.stadt = stadt;
         this.preis = Preis;
+        this.email = email;
 
     }
 
