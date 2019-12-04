@@ -33,7 +33,6 @@ public class BrowseActivity extends AppCompatActivity {
     double preis;
     int beitragID;
     public int[] images;
-    // pass variable from KundenActivity
     String stadtName ;
     static ArrayList<Angebote> angebotContainer = new ArrayList<Angebote>();
     ArrayList<String> listTitel = new ArrayList<String>();
@@ -54,7 +53,7 @@ public class BrowseActivity extends AppCompatActivity {
 
 
         //init();
-        search();
+        angebotContainerLegen();
 //         pass variable from KundenActivity
         boolean boolMiet = getIntent().getBooleanExtra("boolMiet", true);
         boolean boolKauf = getIntent().getBooleanExtra("boolKauf", false);
@@ -69,6 +68,8 @@ public class BrowseActivity extends AppCompatActivity {
             myAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,listTitel);
             myListview.setAdapter(myAdapter);
         }
+
+
         myListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -77,7 +78,6 @@ public class BrowseActivity extends AppCompatActivity {
                 myIntent.putExtra("Beschreibung",myDynamicAngebot.get(position).beschreibung);
                 myIntent.putExtra("Preis",myDynamicAngebot.get(position).preis);
                 myIntent.putExtra("Titel",myDynamicAngebot.get(position).titel);
-
                 startActivity(myIntent);
             }
         });
@@ -118,7 +118,7 @@ public class BrowseActivity extends AppCompatActivity {
 
     }
 
-    void search(){
+    void angebotContainerLegen(){
         int counter = 0;
 
         angebotContainer.clear();
@@ -127,9 +127,6 @@ public class BrowseActivity extends AppCompatActivity {
         // split string
         String[] aString = sb.toString().split("[|]");
 
-        // search for cityname and creat a list of angebot in this city
-//        for( int i1 =2; i1 < aString.length ; i1+=7){
-//                if(aString[i1].equals(stadtName)){
                 for (String string : aString){
                     switch (counter){
                         case 0: {
@@ -176,15 +173,10 @@ public class BrowseActivity extends AppCompatActivity {
                         }
                     }
                 }
-//            }
-//        }
-        // give notification when cant find any matched city name
-
-
-
-
 
     }
+
+
     private void init(){
         FileOutputStream fos = null;
         String text = "1|M|Hamburg|300|Titel von Haus 1|muster@gmail.com|Beschreibung beschreibung beschreibung\n" +

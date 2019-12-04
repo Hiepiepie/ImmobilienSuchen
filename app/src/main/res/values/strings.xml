@@ -16,5 +16,10 @@
     <string name="preis">Preis</string>
     <string name="contact">contact</string>
     <string name="beschreibung">beschreibung</string>
+    <string name="stadt">Stadt</string>
+    <string name="Titel">Titel</string>
+    <string name="Preis">Preis</string>
+    <string name="email">Email</string>
+    <string name="title_activity_ein_angebot">einAngebotActivity</string>
 
 </resources>
