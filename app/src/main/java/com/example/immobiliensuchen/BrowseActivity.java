@@ -73,10 +73,11 @@ public class BrowseActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent myIntent = new Intent(BrowseActivity.this, AngebotActivity.class);
-                Bundle b = new Bundle();
+                myIntent.putExtra("Email",myDynamicAngebot.get(position).email);
+                myIntent.putExtra("Beschreibung",myDynamicAngebot.get(position).beschreibung);
+                myIntent.putExtra("Preis",myDynamicAngebot.get(position).preis);
+                myIntent.putExtra("Titel",myDynamicAngebot.get(position).titel);
 
-                b.putSerializable("angebot", myDynamicAngebot.get(position));
-//                myIntent.putExtra("angebot", b);
                 startActivity(myIntent);
             }
         });

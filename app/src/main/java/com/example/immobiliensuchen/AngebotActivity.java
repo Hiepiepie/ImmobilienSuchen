@@ -31,14 +31,14 @@ public class AngebotActivity extends AppCompatActivity {
         TextView contactText = (TextView) findViewById(R.id.emailTextView);
         TextView beschreibungText = (TextView) findViewById(R.id.beschreibungTextView);
 
+        contactText.setText(getIntent().getStringExtra("Email"));
+        beschreibungText.setText(getIntent().getStringExtra("Beschreibung"));
 
-        Angebote angebot = (Angebote) getIntent().getSerializableExtra("angebot");
+        titelText.setText(getIntent().getStringExtra("Titel"));
+        double t = getIntent().getDoubleExtra("Preis",0);
+        String s = Double.toString(t);
+        preisText.setText(s);
 
-
-        titelText.setText(angebot.titel);
-        preisText.setText(Double.toString(angebot.preis));
-        contactText.setText(angebot.email);
-        beschreibungText.setText(angebot.beschreibung);
 
 
 
