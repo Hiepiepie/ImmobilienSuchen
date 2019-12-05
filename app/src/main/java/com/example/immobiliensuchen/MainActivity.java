@@ -38,7 +38,10 @@ class Angebote implements Serializable{
 
 public class MainActivity extends AppCompatActivity {
 
+
     Button kundenB, maklerB;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
