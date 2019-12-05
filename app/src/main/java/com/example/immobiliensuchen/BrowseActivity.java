@@ -196,8 +196,6 @@ public class BrowseActivity extends AppCompatActivity {
             fos = openFileOutput(FILE_NAME,MODE_PRIVATE );
             fos.write(text.getBytes());
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

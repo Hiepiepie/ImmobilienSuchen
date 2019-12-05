@@ -1,11 +1,22 @@
 package com.example.immobiliensuchen;
 
+import android.Manifest;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -17,6 +28,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class NeuAngebotActivity extends AppCompatActivity {
+
+    private int STORAGE_PERMISSION_CODE = 1;
     public StringBuilder sb = new StringBuilder();
     private static final String FILE_NAME = "NZSE.txt";
     static ArrayList<Angebote> angebotContainer = new ArrayList<Angebote>();
@@ -39,11 +52,74 @@ public class NeuAngebotActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         angebotContainerLegen();
 
+        Button abschickenButton = (Button) findViewById(R.id.buttonAbschicken);
+        Button abbrechenButton = (Button) findViewById(R.id.buttonCancel);
 
-
-
+        abschickenButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checkPermission();
+                Intent myIntent = new Intent(NeuAngebotActivity.this, MaklerActivity.class);
+                startActivity(myIntent);
+            }
+        });
+        abbrechenButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent myIntent = new Intent(NeuAngebotActivity.this, MaklerActivity.class);
+                startActivity(myIntent);
+            }
+        });
 
     }
+
+    private void checkPermission(){
+        if (ContextCompat.checkSelfPermission(NeuAngebotActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
+            Toast.makeText(NeuAngebotActivity.this, " You have already granted permission" , Toast.LENGTH_SHORT).show();
+            saveToFile();
+        } else {
+            requestStoragePermission();
+        }
+    }
+    private void requestStoragePermission(){
+        if(ActivityCompat.shouldShowRequestPermissionRationale(NeuAngebotActivity.this,Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+            new AlertDialog.Builder(this)
+                    .setTitle("Permission needed")
+                    .setMessage("This permission is needed because of this and that")
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            ActivityCompat.requestPermissions(NeuAngebotActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
+                            saveToFile();
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .create().show();
+
+        } else{
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
+
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == STORAGE_PERMISSION_CODE){
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                Toast.makeText(this,"Permission GRANTED", Toast.LENGTH_SHORT ).show();
+            } else
+            {
+                Toast.makeText(this,"Permission DENIED", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+
     private String createText(){
         String text;
 
@@ -97,8 +173,6 @@ public class NeuAngebotActivity extends AppCompatActivity {
                 fos = openFileOutput(FILE_NAME, MODE_PRIVATE);
                 fos.write(text.getBytes());
 
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
