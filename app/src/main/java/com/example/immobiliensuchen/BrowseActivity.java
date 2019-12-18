@@ -1,20 +1,17 @@
 package com.example.immobiliensuchen;
 
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -22,9 +19,14 @@ import java.util.ArrayList;
 
 public class BrowseActivity extends AppCompatActivity {
     Toolbar myAngebote;
-    ListView myListview;
+    RecyclerView myList;
     private static final String FILE_NAME = "NZSE.txt";
 
+    private static final String TAG = "BrowseActivity";
+
+    private ArrayList<String> mPreis = new ArrayList<>();
+    private ArrayList<String> mImagesURL = new ArrayList<>();
+    RecyclerView recyclerView;
 
     public StringBuilder sb = new StringBuilder();
 
@@ -32,150 +34,14 @@ public class BrowseActivity extends AppCompatActivity {
     char art;
     double preis;
     int beitragID;
-    public int[] images;
+
+
     String stadtName ;
     static ArrayList<Angebote> angebotContainer = new ArrayList<Angebote>();
     ArrayList<String> listTitel = new ArrayList<String>();
     ArrayList<Angebote> myDynamicAngebot = new ArrayList<Angebote>();
-    ArrayAdapter<String> myAdapter ;
-
-
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_browse);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.Angebote);
-        setSupportActionBar(toolbar);
-
-
-        myListview = (ListView) findViewById(R.id.listAngebote);
-
-
-        //init();
-        angebotContainerLegen();
-//         pass variable from KundenActivity
-        boolean boolMiet = getIntent().getBooleanExtra("boolMiet", true);
-        boolean boolKauf = getIntent().getBooleanExtra("boolKauf", false);
-        stadtName = getIntent().getStringExtra("stadtname");
-
-        listTitel.clear();
-        myAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,listTitel);
-        myAdapter.notifyDataSetChanged();
-        createTitelList(boolMiet, boolKauf);
-
-        for (int i = 0; i<listTitel.size(); i++){
-            myAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,listTitel);
-            myListview.setAdapter(myAdapter);
-        }
-
-
-        myListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent myIntent = new Intent(BrowseActivity.this, AngebotActivity.class);
-                myIntent.putExtra("Email",myDynamicAngebot.get(position).email);
-                myIntent.putExtra("Beschreibung",myDynamicAngebot.get(position).beschreibung);
-                myIntent.putExtra("Preis",myDynamicAngebot.get(position).preis);
-                myIntent.putExtra("Titel",myDynamicAngebot.get(position).titel);
-                startActivity(myIntent);
-            }
-        });
-
-
-
-    }
-
-
-    protected void createTitelList(boolean boolMiet, boolean boolKauf) {
-        boolean test = true;
-        listTitel.clear();
-        if(boolMiet){
-            for (int j = 0 ; j < angebotContainer.size(); j++ ){
-                if ((angebotContainer.get(j).stadt.equals(stadtName) ) && (angebotContainer.get(j).art == 'M')){
-                     test = false;
-                     listTitel.add(angebotContainer.get(j).titel);
-                     myDynamicAngebot.add(angebotContainer.get(j));
-                }
-            }
-        }
-        if(boolKauf){
-            for (int j = 0 ; j < angebotContainer.size(); j++ ){
-                if ((angebotContainer.get(j).stadt.equals(stadtName)  ) && (angebotContainer.get(j).art == 'K')){
-                    test = false;
-                    listTitel.add(angebotContainer.get(j).titel);
-                    myDynamicAngebot.add(angebotContainer.get(j));
-                }
-            }
-
-        }
-        if(test){
-            Toast t;
-            t = Toast.makeText(BrowseActivity.this.getApplicationContext(),
-                    " Stadt nicht gefunden oder es gibt kein Angebot in dieser Stadt ", Toast.LENGTH_SHORT);
-            t.show();
-        }
-
-    }
-
-    void angebotContainerLegen(){
-        int counter = 0;
-
-        angebotContainer.clear();
-        // read data from a file
-        readFile();
-        // split string
-        String[] aString = sb.toString().split("[|]");
-
-                for (String string : aString){
-                    switch (counter){
-                        case 0: {
-                            beitragID = Integer.parseInt(string);
-                            counter++;
-
-                            break;
-                        }
-                        case 1:{
-                            art = string.charAt(0);
-                            counter++;
-                            break;
-                        }
-                        case 2:{
-                            stadt = string;
-                            counter++;
-                            break;
-                        }
-                        case 3:{
-                            preis = Double.parseDouble(string);
-                            counter++;
-                            break;
-                        }
-                        case 4:{
-                            titel = string;
-                            counter++;
-                            break;
-                        }
-                        case 5: {
-                            email = string;
-                            counter++;
-                            break;
-                        }
-                        case 6: {
-                            beschreibung = string;
-                            counter++;
-                            break;
-                        }
-                        case 7:{
-                            Angebote a = new Angebote(beitragID,art,stadt,preis,titel,email,beschreibung);
-                            angebotContainer.add(a);
-                            counter = 0;
-                            break;
-                        }
-                    }
-                }
-
-    }
-
+    ArrayList<String> myEmail = new ArrayList<String>();
+    ArrayList<String> myBeschreibung = new ArrayList<String>();
 
     private void init(){
         FileOutputStream fos = null;
@@ -196,8 +62,6 @@ public class BrowseActivity extends AppCompatActivity {
             fos = openFileOutput(FILE_NAME,MODE_PRIVATE );
             fos.write(text.getBytes());
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -221,8 +85,6 @@ public class BrowseActivity extends AppCompatActivity {
             while (( text = br.readLine())!= null){
                 sb.append(text).append('\n');
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -234,6 +96,139 @@ public class BrowseActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+    void angebotContainerLegen(){
+        int counter = 0;
+
+        angebotContainer.clear();
+        // read data from a file
+        readFile();
+        // split string
+        String[] aString = sb.toString().split("[|]");
+
+        for (String string : aString){
+            switch (counter){
+                case 0: {
+                    beitragID = Integer.parseInt(string);
+                    counter++;
+
+                    break;
+                }
+                case 1:{
+                    art = string.charAt(0);
+                    counter++;
+                    break;
+                }
+                case 2:{
+                    stadt = string;
+                    counter++;
+                    break;
+                }
+                case 3:{
+                    preis = Double.parseDouble(string);
+                    counter++;
+                    break;
+                }
+                case 4:{
+                    titel = string;
+                    counter++;
+                    break;
+                }
+                case 5: {
+                    email = string;
+                    counter++;
+                    break;
+                }
+                case 6: {
+                    beschreibung = string;
+                    counter++;
+                    break;
+                }
+                case 7:{
+                    Angebote a = new Angebote(beitragID,art,stadt,preis,titel,email,beschreibung);
+                    angebotContainer.add(a);
+                    counter = 0;
+                    break;
+                }
+            }
+        }
+
+    }
+    protected void createTundPList(boolean boolMiet, boolean boolKauf) {
+        boolean test = true;
+        listTitel.clear();
+        if(boolMiet){
+            for (int j = 0 ; j < angebotContainer.size(); j++ ){
+                if ((angebotContainer.get(j).stadt.equals(stadtName) ) && (angebotContainer.get(j).art == 'M')){
+                    test = false;
+                    listTitel.add(angebotContainer.get(j).titel);
+                    mPreis.add(Double.toString(angebotContainer.get(j).preis));
+                    myEmail.add(angebotContainer.get(j).email);
+                    myBeschreibung.add(angebotContainer.get(j).beschreibung);
+                    myDynamicAngebot.add(angebotContainer.get(j));
+                }
+            }
+        }
+        if(boolKauf){
+            for (int j = 0 ; j < angebotContainer.size(); j++ ){
+                if ((angebotContainer.get(j).stadt.equals(stadtName)  ) && (angebotContainer.get(j).art == 'K')){
+                    test = false;
+                    listTitel.add(angebotContainer.get(j).titel);
+                    mPreis.add(Double.toString(angebotContainer.get(j).preis));
+                    myEmail.add(angebotContainer.get(j).email);
+                    myBeschreibung.add(angebotContainer.get(j).beschreibung);
+                    myDynamicAngebot.add(angebotContainer.get(j));
+                }
+            }
+
+        }
+        if(test){
+            Toast t;
+            t = Toast.makeText(BrowseActivity.this.getApplicationContext(),
+                    " Stadt nicht gefunden oder es gibt kein Angebot in dieser Stadt ", Toast.LENGTH_SHORT);
+            t.show();
+        }
+
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_browse);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.Angebote);
+        setSupportActionBar(toolbar);
+
+        //init();
+        angebotContainerLegen();
+//      pass variable from KundenActivity
+        boolean boolMiet = getIntent().getBooleanExtra("boolMiet", true);
+        boolean boolKauf = getIntent().getBooleanExtra("boolKauf", false);
+        stadtName = getIntent().getStringExtra("stadtname");
+
+        listTitel.clear();
+
+        createTundPList(boolMiet, boolKauf);
+
+        initImageBitmaps();
+
+
+
+    }
+
+    private void initImageBitmaps(){
+        Log.d(TAG, "initImageBitmaps: preparing bitmaps");
+        for ( int i = 0 ; i< listTitel.size(); i++) {
+            mImagesURL.add("https://www.pexels.com/photo/white-and-brown-concrete-building-2287310/");
+        }
+
+        initRecyclerView();
+    }
+    private void initRecyclerView(){
+        Log.d(TAG, "initRecyclerView: intit RecyclerView");
+        recyclerView = findViewById(R.id.recyclerView);
+        RecyclerViewAdapter adapter = new RecyclerViewAdapter(listTitel,mPreis,myEmail,myBeschreibung,mImagesURL,this);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 }
 

@@ -35,8 +35,7 @@ public class AngebotActivity extends AppCompatActivity {
         beschreibungText.setText(getIntent().getStringExtra("Beschreibung"));
 
         titelText.setText(getIntent().getStringExtra("Titel"));
-        double t = getIntent().getDoubleExtra("Preis",0);
-        String s = Double.toString(t);
+        String s = getIntent().getStringExtra("Preis");
         preisText.setText(s);
 
 
