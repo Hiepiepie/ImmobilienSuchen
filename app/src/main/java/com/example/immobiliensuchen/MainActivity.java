@@ -13,7 +13,7 @@ import java.io.Serializable;
 
 class Angebote implements Serializable{
     int BeitragID;
-    char art;
+    String art;
     String stadt;
     double preis;
     String titel;
@@ -21,7 +21,7 @@ class Angebote implements Serializable{
     ImageView image;
     String email;
 
-    public Angebote(int BeitragID,char art, String stadt, double Preis, String titel, String email, String beschreibung )
+    public Angebote(int BeitragID, String art, String stadt, double Preis, String titel, String email, String beschreibung )
 
     {
         this.BeitragID= BeitragID;

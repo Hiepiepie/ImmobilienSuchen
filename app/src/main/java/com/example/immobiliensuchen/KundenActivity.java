@@ -38,7 +38,18 @@ public class KundenActivity extends AppCompatActivity {
             @Override
           public void onClick(View v) {
 
-                checkPermission();
+                EditText temp =  findViewById(R.id.StadtEditText);
+                stadtName = temp.getText().toString();         // get Cityname
+                if(stadtName.equals("")){
+                    Toast t;
+                    t = Toast.makeText(KundenActivity.this.getApplicationContext(),
+                            "Stadt Name kann nicht leer sein. Bitte etwas eingeben ", Toast.LENGTH_SHORT);
+                    t.show();
+                }
+                else{
+                onRadioButtonClicked();   // set the value of bool , control if searching for Miet oder Kauf Object
+
+                openBrowseActivity();}
 
             }
         });

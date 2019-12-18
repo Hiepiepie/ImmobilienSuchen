@@ -28,9 +28,30 @@
         android:id="@+id/angebotpreis"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="110dp"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/Preis"
         android:layout_marginTop="60dp"
         android:text="dummy"
+        android:textColor="#000"
+        android:textSize="15sp" />
+    <TextView
+        android:id="@+id/Euro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/angebotpreis"
+        android:layout_marginTop="60dp"
+        android:text="Euro"
+        android:textColor="#000"
+        android:textSize="15sp" />
+    <TextView
+        android:id="@+id/Preis"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_toRightOf="@+id/images"
+        android:layout_marginTop="60dp"
+        android:text="Preis"
         android:textColor="#000"
         android:textSize="15sp" />
 </RelativeLayout>

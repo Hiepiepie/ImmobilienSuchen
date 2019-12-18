@@ -2,7 +2,9 @@ package com.example.immobiliensuchen;
 
 
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,28 +12,31 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class BrowseActivity extends AppCompatActivity {
-    Toolbar myAngebote;
-    RecyclerView myList;
-    private static final String FILE_NAME = "NZSE.txt";
+
 
     private static final String TAG = "BrowseActivity";
 
     private ArrayList<String> mPreis = new ArrayList<>();
-    private ArrayList<String> mImagesURL = new ArrayList<>();
+    private ArrayList<ImageView> mImagesURL = new ArrayList<>();
     RecyclerView recyclerView;
 
     public StringBuilder sb = new StringBuilder();
 
     String titel, beschreibung, stadt, email;
-    char art;
+    String art;
     double preis;
     int beitragID;
 
@@ -44,122 +49,100 @@ public class BrowseActivity extends AppCompatActivity {
     ArrayList<String> myBeschreibung = new ArrayList<String>();
 
     private void init(){
-        FileOutputStream fos = null;
-        String text = "1|M|Hamburg|300|Titel von Haus 1|muster@gmail.com|Beschreibung beschreibung beschreibung\n" +
-                "beschreibung|\n" +
-                "|2|K|Frankfurt|150000|Titel von Haus 2| muster@gmail.com| beschreibung von haus 2|\n" +
-                "|3|M|Hamburg|350|Titel von Haus 3| muster@gmail.com| beschreibung von haus 3|\n" +
-                "|4|M|Berlin|250|Titel von Haus 4| muster@gmail.com|beschreibung von haus 4|\n" +
-                "|5|K|Darmstadt|280000|Titel von Haus 5| muster@gmail.com| beschreibung von haus 5|\n" +
-                "|6|M|Darmstadt|350|Titel von Haus 6| muster@gmail.com| beschreibung von haus 6|\n" +
-                "|7|K|Kiel|1000000|Titel von Haus 7| muster@gmail.com|beschreibung von haus 7|\n" +
-                "|8|K|Amsterdam|250000|Titel von Haus 8| muster@gmail.com| beschreibung von haus 8|\n" +
-                "|9|M|Muenchen|400|Titel von Haus 9| muster@gmail.com|beschreibung von haus 9|\n" +
-                "|10|M|Stuttgart|500|Titel von Haus 10| muster@gmail.com|beschreibung von haus 10|\n" +
-                "|11|M|Koeln|450|Titel von Haus 11| muster@gmail.com|beschreibung von haus 11|\n"
-                ;
-        try {
-            fos = openFileOutput(FILE_NAME,MODE_PRIVATE );
-            fos.write(text.getBytes());
 
-        } catch (IOException e) {
+
+
+        Angebote a1 = new Angebote(1,"M","Darmstadt",370,"Titel von Haus 1",
+                "Musterhaus1@gmail.com", "Beschreibung von Haus 1");
+        Angebote a2 = new Angebote(2,"K","Darmstadt",350120,"Titel von Haus 2",
+                "Musterhaus2@gmail.com", "Beschreibung von Haus 2");
+        Angebote a3 = new Angebote(3,"K","Darmstadt",250000,"Titel von Haus 3",
+                "Musterhaus3@gmail.com", "Beschreibung von Haus 3");
+        Angebote a4 = new Angebote(4,"K","Darmstadt",1000000,"Titel von Haus 4",
+                "Musterhaus4@gmail.com", "Beschreibung von Haus 4");
+        Angebote a5 = new Angebote(5,"M","Darmstadt",370,"Titel von Haus 5",
+                "Musterhaus5@gmail.com", "Beschreibung von Haus 5");
+        Angebote a6 = new Angebote(6,"M","Darmstadt",370,"Titel von Haus 6",
+                "Musterhaus6@gmail.com", "Beschreibung von Haus 6");
+        angebotContainer.add(a1);
+        angebotContainer.add(a2);
+        angebotContainer.add(a3);
+        angebotContainer.add(a4);
+        angebotContainer.add(a5);
+        angebotContainer.add(a6);
+
+        try {
+
+            File myFile = new File(Environment.getExternalStorageDirectory().getPath() + "/" + "NZSE2.txt");
+            FileOutputStream fos = new FileOutputStream(myFile);
+
+            OutputStreamWriter myOutWriter = new OutputStreamWriter(fos);
+            JSONArray jsonarray = new JSONArray();
+        for (int i = 0 ; i < angebotContainer.size();i++){
+            JSONObject object = new JSONObject();
+            Angebote a = angebotContainer.get(i);
+            object.put("BeitragsID",a.BeitragID);
+            object.put("Titel",a.titel);
+            object.put("Art",a.art);
+            object.put("Preis",a.preis);
+            object.put("Stadt",a.stadt);
+            object.put("Email",a.email);
+            object.put("Beschreibung",a.beschreibung);
+            jsonarray.put(object);
+        }
+        myOutWriter.append(jsonarray.toString());
+        myOutWriter.close();
+        fos.close();
+            Toast.makeText(this, angebotContainer.size()
+                            +
+                            " werden gespeichert!",
+                    Toast.LENGTH_SHORT).show();
+
+
+        } catch (Exception e) {
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
-        } finally {
-            if(fos != null){
-                try {
-                    fos.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
 
     }
     public void readFile(){
-        FileInputStream fis = null;
-        try {
-            fis = openFileInput(FILE_NAME);
-            InputStreamReader isr = new InputStreamReader(fis);
-            BufferedReader br = new BufferedReader(isr);
-            String text;
-            while (( text = br.readLine())!= null){
-                sb.append(text).append('\n');
+        String alleausgaben = "";
+        angebotContainer= new ArrayList<>();
+        try{
+            File myFile = new File(Environment.getExternalStorageDirectory().getPath()+"/"+ "NZSE2.txt");
+            FileInputStream fis = new FileInputStream(myFile);
+            BufferedReader myReader = new BufferedReader( new InputStreamReader(fis, StandardCharsets.UTF_8.name()));
+            String line;
+            while((line = myReader.readLine())!= null ){
+                alleausgaben += line;
             }
-        } catch (IOException e) {
+            JSONArray jsonArray = new JSONArray(alleausgaben);
+            for (int i = 0; i < jsonArray.length(); i++){
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                beitragID = Integer.parseInt(jsonObject.getString("BeitragsID"));
+                art = jsonObject.getString("Art");
+                titel = jsonObject.getString("Titel");
+                preis = Double.parseDouble(jsonObject.getString("Preis"));
+                stadt = jsonObject.getString("Stadt");
+                email = jsonObject.getString("Email");
+                beschreibung = jsonObject.getString("Beschreibung");
+                Angebote a = new Angebote(beitragID,art,stadt,preis,titel,email,beschreibung);
+                angebotContainer.add(a);
+            }
+
+
+        } catch (Exception e){
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
-        } finally {
-            if(fis != null) {
-                try {
-                    fis.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
     }
-    void angebotContainerLegen(){
-        int counter = 0;
 
-        angebotContainer.clear();
-        // read data from a file
-        readFile();
-        // split string
-        String[] aString = sb.toString().split("[|]");
-
-        for (String string : aString){
-            switch (counter){
-                case 0: {
-                    beitragID = Integer.parseInt(string);
-                    counter++;
-
-                    break;
-                }
-                case 1:{
-                    art = string.charAt(0);
-                    counter++;
-                    break;
-                }
-                case 2:{
-                    stadt = string;
-                    counter++;
-                    break;
-                }
-                case 3:{
-                    preis = Double.parseDouble(string);
-                    counter++;
-                    break;
-                }
-                case 4:{
-                    titel = string;
-                    counter++;
-                    break;
-                }
-                case 5: {
-                    email = string;
-                    counter++;
-                    break;
-                }
-                case 6: {
-                    beschreibung = string;
-                    counter++;
-                    break;
-                }
-                case 7:{
-                    Angebote a = new Angebote(beitragID,art,stadt,preis,titel,email,beschreibung);
-                    angebotContainer.add(a);
-                    counter = 0;
-                    break;
-                }
-            }
-        }
-
-    }
     protected void createTundPList(boolean boolMiet, boolean boolKauf) {
         boolean test = true;
         listTitel.clear();
         if(boolMiet){
             for (int j = 0 ; j < angebotContainer.size(); j++ ){
-                if ((angebotContainer.get(j).stadt.equals(stadtName) ) && (angebotContainer.get(j).art == 'M')){
+                if ((angebotContainer.get(j).stadt.equals(stadtName) ) && (angebotContainer.get(j).art.equals("M"))){
                     test = false;
                     listTitel.add(angebotContainer.get(j).titel);
                     mPreis.add(Double.toString(angebotContainer.get(j).preis));
@@ -171,7 +154,7 @@ public class BrowseActivity extends AppCompatActivity {
         }
         if(boolKauf){
             for (int j = 0 ; j < angebotContainer.size(); j++ ){
-                if ((angebotContainer.get(j).stadt.equals(stadtName)  ) && (angebotContainer.get(j).art == 'K')){
+                if ((angebotContainer.get(j).stadt.equals(stadtName)  ) && (angebotContainer.get(j).art.equals("K"))){
                     test = false;
                     listTitel.add(angebotContainer.get(j).titel);
                     mPreis.add(Double.toString(angebotContainer.get(j).preis));
@@ -199,7 +182,7 @@ public class BrowseActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         //init();
-        angebotContainerLegen();
+        readFile();
 //      pass variable from KundenActivity
         boolean boolMiet = getIntent().getBooleanExtra("boolMiet", true);
         boolean boolKauf = getIntent().getBooleanExtra("boolKauf", false);
@@ -218,7 +201,9 @@ public class BrowseActivity extends AppCompatActivity {
     private void initImageBitmaps(){
         Log.d(TAG, "initImageBitmaps: preparing bitmaps");
         for ( int i = 0 ; i< listTitel.size(); i++) {
-            mImagesURL.add("https://www.pexels.com/photo/white-and-brown-concrete-building-2287310/");
+            ImageView j = new ImageView(this);
+            j.setImageResource(R.drawable.home);
+            mImagesURL.add(j);
         }
 
         initRecyclerView();

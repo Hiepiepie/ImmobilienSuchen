@@ -29,8 +29,8 @@ public class einAngebotActivity extends AppCompatActivity {
     String titel, beschreibung, stadt, email;
     char art;
     double preis;
-    int beitragID;
-    public int[] images;
+
+
     public RadioButton verkaufen,vermieten;
 
 

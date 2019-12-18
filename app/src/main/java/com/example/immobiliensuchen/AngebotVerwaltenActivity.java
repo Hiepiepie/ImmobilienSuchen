@@ -12,7 +12,6 @@ import androidx.appcompat.widget.Toolbar;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -24,7 +23,7 @@ public class AngebotVerwaltenActivity extends AppCompatActivity {
     ArrayList<String> listTitel = new ArrayList<String>();
     static ArrayList<Angebote> angebotContainer = new ArrayList<Angebote>();
     String titel, beschreibung, stadt, email;
-    char art;
+    String art;
     double preis;
     int beitragID;
     public int[] images;
@@ -90,7 +89,7 @@ public class AngebotVerwaltenActivity extends AppCompatActivity {
                     break;
                 }
                 case 1:{
-                    art = string.charAt(0);
+                    art = string;
                     counter++;
                     break;
                 }
@@ -141,8 +140,6 @@ public class AngebotVerwaltenActivity extends AppCompatActivity {
             while (( text = br.readLine())!= null){
                 sb.append(text).append('\n');
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

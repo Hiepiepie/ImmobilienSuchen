@@ -34,7 +34,7 @@ public class NeuAngebotActivity extends AppCompatActivity {
     private static final String FILE_NAME = "NZSE.txt";
     static ArrayList<Angebote> angebotContainer = new ArrayList<Angebote>();
     String titel, beschreibung, stadt, email;
-    char art;
+    String art;
     double preis;
     int beitragID;
     public int[] images;
@@ -127,9 +127,9 @@ public class NeuAngebotActivity extends AppCompatActivity {
         verkaufen = (RadioButton) findViewById(R.id.verkaufenButton);
         vermieten = (RadioButton) findViewById(R.id.vermietenButton);
         if(verkaufen.isChecked()){
-            art = 'K';
+            art = "K";
         }else {
-            art = 'M';
+            art = "M";
         }
 
         EditText stadtEditText = (EditText) findViewById(R.id.stadtTextEdit);
@@ -204,7 +204,7 @@ public class NeuAngebotActivity extends AppCompatActivity {
                     break;
                 }
                 case 1:{
-                    art = string.charAt(0);
+                    art = string;
                     counter++;
                     break;
                 }
