@@ -38,45 +38,55 @@ public class KundenActivity extends AppCompatActivity {
             @Override
           public void onClick(View v) {
 
-                EditText temp =  findViewById(R.id.StadtEditText);
-                stadtName = temp.getText().toString();         // get Cityname
-                if(stadtName.equals("")){
-                    Toast t;
-                    t = Toast.makeText(KundenActivity.this.getApplicationContext(),
-                            "Stadt Name kann nicht leer sein. Bitte etwas eingeben ", Toast.LENGTH_SHORT);
-                    t.show();
-                }
-                else{
-                onRadioButtonClicked();   // set the value of bool , control if searching for Miet oder Kauf Object
-
-                openBrowseActivity();}
+                checkWritePermission();
+                checkReadPermission();
 
             }
         });
     }
-    private void doThingsIfPermissionGranted(){
-        EditText temp =  findViewById(R.id.StadtEditText);
-        stadtName = temp.getText().toString();         // get Cityname
-        if(stadtName.equals("")){
-            Toast t;
-            t = Toast.makeText(KundenActivity.this.getApplicationContext(),
-                    "Stadt Name kann nicht leer sein. Bitte etwas eingeben ", Toast.LENGTH_SHORT);
-            t.show();
+
+
+    private void checkWritePermission(){
+        if (ContextCompat.checkSelfPermission(KundenActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
+            Toast.makeText(KundenActivity.this, " You have already granted permission" , Toast.LENGTH_SHORT).show();
+
+        } else {
+            requestWriteStoragePermission();
         }
-        onRadioButtonClicked();   // set the value of bool , control if searching for Miet oder Kauf Object
-
-        openBrowseActivity();
     }
-
-    private void checkPermission(){
+    private void checkReadPermission(){
         if (ContextCompat.checkSelfPermission(KundenActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
             Toast.makeText(KundenActivity.this, " You have already granted permission" , Toast.LENGTH_SHORT).show();
             doThingsIfPermissionGranted();
         } else {
-            requestStoragePermission();
+            requestReadStoragePermission();
         }
     }
-    private void requestStoragePermission(){
+    private void requestWriteStoragePermission(){
+        if(ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+            new AlertDialog.Builder(this)
+                    .setTitle("Permission needed")
+                    .setMessage("This permission is needed because of this and that")
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            ActivityCompat.requestPermissions(KundenActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
+                            doThingsIfPermissionGranted();
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .create().show();
+
+        } else{
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
+        }
+    }
+    private void requestReadStoragePermission(){
         if(ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.READ_EXTERNAL_STORAGE)){
             new AlertDialog.Builder(this)
                     .setTitle("Permission needed")
@@ -99,6 +109,22 @@ public class KundenActivity extends AppCompatActivity {
         } else{
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
         }
+    }
+    private void doThingsIfPermissionGranted(){
+        EditText temp =  findViewById(R.id.StadtEditText);
+        stadtName = temp.getText().toString();         // get Cityname
+        if(stadtName.equals("")){
+            Toast t;
+            t = Toast.makeText(KundenActivity.this.getApplicationContext(),
+                    "Stadt Name kann nicht leer sein. Bitte etwas eingeben ", Toast.LENGTH_SHORT);
+            t.show();
+        }
+        else{
+            onRadioButtonClicked();   // set the value of bool , control if searching for Miet oder Kauf Object
+
+            openBrowseActivity();}
+
+
     }
 
     @Override
