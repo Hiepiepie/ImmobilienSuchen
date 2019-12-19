@@ -1,33 +1,49 @@
 package com.example.immobiliensuchen;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.os.Environment;
+import android.util.Log;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class AngebotVerwaltenActivity extends AppCompatActivity {
 
-    public StringBuilder sb = new StringBuilder();
-    private static final String FILE_NAME = "NZSE.txt";
-    ArrayList<String> listTitel = new ArrayList<String>();
-    static ArrayList<Angebote> angebotContainer = new ArrayList<Angebote>();
+    private static final String TAG = "AngebotVerwaltenActivity";
+
+    private ArrayList<ImageView> mImagesURL = new ArrayList<>();
+    RecyclerView recyclerView;
+
+
     String titel, beschreibung, stadt, email;
     String art;
     double preis;
     int beitragID;
-    public int[] images;
-    ArrayAdapter<String> myAdapter ;
+
+
+
+    static ArrayList<Angebote> angebotContainer = new ArrayList<Angebote>();
+    ArrayList<String> listTitel = new ArrayList<String>();
+    ArrayList<String> myEmail = new ArrayList<String>();
+    ArrayList<String> myBeschreibung = new ArrayList<String>();
+    private ArrayList<String> mPreis = new ArrayList<>();
+    ArrayList<String> myArt = new ArrayList<String>();
+    ArrayList<String> myStadt = new ArrayList<String>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,122 +51,68 @@ public class AngebotVerwaltenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_angebot_verwalten);
         Toolbar toolbar = findViewById(R.id.Angebote);
         setSupportActionBar(toolbar);
-        ListView alleAngebote = (ListView) findViewById(R.id.alleAngebote);
-        angebotContainerLegen();
+
+        readFile();
 
         // create a list of titel
         for (int i = 0; i < angebotContainer.size() ; i++){
             listTitel.add(angebotContainer.get(i).titel);
-
+            mPreis.add(Double.toString(angebotContainer.get(i).preis));
+            myEmail.add(angebotContainer.get(i).email);
+            myBeschreibung.add(angebotContainer.get(i).beschreibung);
+            myArt.add(angebotContainer.get(i).art);
+            myStadt.add(angebotContainer.get(i).stadt);
         }
-        // create rows
-        for (int i = 0; i<listTitel.size(); i++){
-            myAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,listTitel);
-            alleAngebote.setAdapter(myAdapter);
-        }
-        // on row's item clicked
-        alleAngebote.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                Intent myIntent = new Intent(AngebotVerwaltenActivity.this, einAngebotActivity.class);
-                myIntent.putExtra("Email",angebotContainer.get(position).email);
-                myIntent.putExtra("Beschreibung",angebotContainer.get(position).beschreibung);
-                myIntent.putExtra("Preis",angebotContainer.get(position).preis);
-                myIntent.putExtra("Titel",angebotContainer.get(position).titel);
-                myIntent.putExtra("type", angebotContainer.get(position).art);
-                myIntent.putExtra("stadt", angebotContainer.get(position).stadt);
-
-                startActivity(myIntent);
-
-            }
-        });
-
-
-
-
+        initImageBitmaps();
 
     }
-    void angebotContainerLegen(){
-        int counter = 0;
 
-        angebotContainer.clear();
-        // read data from a file
-        readFile();
-        // split string
-        String[] aString = sb.toString().split("[|]");
-
-        for (String string : aString){
-            switch (counter){
-                case 0: {
-                    beitragID = Integer.parseInt(string);
-                    counter++;
-
-                    break;
-                }
-                case 1:{
-                    art = string;
-                    counter++;
-                    break;
-                }
-                case 2:{
-                    stadt = string;
-                    counter++;
-                    break;
-                }
-                case 3:{
-                    preis = Double.parseDouble(string);
-                    counter++;
-                    break;
-                }
-                case 4:{
-                    titel = string;
-                    counter++;
-                    break;
-                }
-                case 5: {
-                    email = string;
-                    counter++;
-                    break;
-                }
-                case 6: {
-                    beschreibung = string;
-                    counter++;
-                    break;
-                }
-                case 7:{
-                    Angebote a = new Angebote(beitragID,art,stadt,preis,titel,email,beschreibung);
-                    angebotContainer.add(a);
-                    counter = 0;
-                    break;
-                }
-            }
-        }
-
-
-
-    }
     public void readFile(){
-        FileInputStream fis = null;
-        try {
-            fis = openFileInput(FILE_NAME);
-            InputStreamReader isr = new InputStreamReader(fis);
-            BufferedReader br = new BufferedReader(isr);
-            String text;
-            while (( text = br.readLine())!= null){
-                sb.append(text).append('\n');
+        String alleausgaben = "";
+        angebotContainer= new ArrayList<>();
+        try{
+            File myFile = new File(Environment.getExternalStorageDirectory().getPath()+"/"+ "NZSE2.txt");
+            FileInputStream fis = new FileInputStream(myFile);
+            BufferedReader myReader = new BufferedReader( new InputStreamReader(fis, StandardCharsets.UTF_8.name()));
+            String line;
+            while((line = myReader.readLine())!= null ){
+                alleausgaben += line;
             }
-        } catch (IOException e) {
+            JSONArray jsonArray = new JSONArray(alleausgaben);
+            for (int i = 0; i < jsonArray.length(); i++){
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                beitragID = Integer.parseInt(jsonObject.getString("BeitragsID"));
+                art = jsonObject.getString("Art");
+                titel = jsonObject.getString("Titel");
+                preis = Double.parseDouble(jsonObject.getString("Preis"));
+                stadt = jsonObject.getString("Stadt");
+                email = jsonObject.getString("Email");
+                beschreibung = jsonObject.getString("Beschreibung");
+                Angebote a = new Angebote(beitragID,art,stadt,preis,titel,email,beschreibung);
+                angebotContainer.add(a);
+            }
+
+
+        } catch (Exception e){
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
-        } finally {
-            if(fis != null) {
-                try {
-                    fis.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
     }
+    private void initImageBitmaps(){
+        Log.d(TAG, "initImageBitmaps: preparing bitmaps");
+        for ( int i = 0 ; i< listTitel.size(); i++) {
+            ImageView j = new ImageView(this);
+            j.setImageResource(R.drawable.home);
+            mImagesURL.add(j);
+        }
 
+        initRecyclerView();
+    }
+    private void initRecyclerView(){
+        Log.d(TAG, "initRecyclerView: intit RecyclerView");
+        recyclerView = findViewById(R.id.recyclerView2);
+        RecyclerViewAdapter2 adapter = new RecyclerViewAdapter2(listTitel,mPreis,myEmail,myBeschreibung,myArt,myStadt,mImagesURL,this);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
 }

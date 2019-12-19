@@ -18,7 +18,6 @@ class Angebote implements Serializable{
     double preis;
     String titel;
     String beschreibung;
-    ImageView image;
     String email;
 
     public Angebote(int BeitragID, String art, String stadt, double Preis, String titel, String email, String beschreibung )
