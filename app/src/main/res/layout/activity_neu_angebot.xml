@@ -32,7 +32,7 @@
             android:orientation="horizontal">
 
             <RadioButton
-                android:id="@+id/verkaufenButton"
+                android:id="@+id/verkaufenButton2"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -41,7 +41,7 @@
                 />
 
             <RadioButton
-                android:id="@+id/vermietenButton"
+                android:id="@+id/vermietenButton2"
                 android:layout_width="wrap_content"
                 android:layout_height="69dp"
                 android:layout_weight="1"
@@ -50,71 +50,69 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/stadtTextView"
+        android:id="@+id/stadtTextView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/stadt"
         android:textSize="24sp" />
     <EditText
-        android:id="@+id/stadtTextEdit"
+        android:id="@+id/stadtTextEdit2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName" />
 
     <TextView
-        android:id="@+id/TitelTextView"
+        android:id="@+id/TitelTextView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Titel des Angebots"
         android:textSize="24sp" />
 
     <EditText
-        android:id="@+id/titelTextEdit"
+        android:id="@+id/titelTextEdit2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName" />
 
     <TextView
-        android:id="@+id/preisTextView"
+        android:id="@+id/preisTextView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Miete oder KaufPreis"
         android:textSize="24sp" />
     <EditText
-        android:id="@+id/preisTextEdit"
+        android:id="@+id/preisTextEdit2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="number" />
     <TextView
-        android:id="@+id/contactTextView"
+        android:id="@+id/contactTextView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/email"
         android:textSize="24sp"/>
 
     <EditText
-        android:id="@+id/emailTextEdit"
+        android:id="@+id/emailTextEdit2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textEmailAddress" />
 
     <TextView
-        android:id="@+id/beschreibungTextViewTextView"
+        android:id="@+id/beschreibungTextView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Beschreibung"
         android:textSize="24sp" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/beschreibungTextEdit"
+            android:id="@+id/beschreibungTextEdit2"
             android:layout_width="match_parent"
             android:layout_height="210dp" />
 
@@ -124,21 +122,21 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/buttonAbschicken"
+                android:id="@+id/buttonAbschicken2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Abschicken" />
 
             <Button
-                android:id="@+id/buttonCancel"
+                android:id="@+id/buttonCancel2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Abbrechen" />
         </LinearLayout>
 
-    </com.google.android.material.textfield.TextInputLayout>
+
 
 
 </LinearLayout>

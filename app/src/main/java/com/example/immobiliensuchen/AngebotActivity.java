@@ -39,12 +39,6 @@ public class AngebotActivity extends AppCompatActivity {
         preisText.setText(s);
 
 
-
-
-
-
-
-
         for (int i= 0 ; i< 5 ; i++){
             View view = li.inflate(R.layout.item, gallery, false);
             ImageView imageView = view.findViewById(R.id.imageView3);

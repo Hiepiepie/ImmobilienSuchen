@@ -1,6 +1,7 @@
 package com.example.immobiliensuchen;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -27,8 +29,8 @@ public class einAngebotActivity extends AppCompatActivity {
     private static final String FILE_NAME = "NZSE.txt";
     static ArrayList<Angebote> angebotContainer = new ArrayList<Angebote>();
     String titel, beschreibung, stadt, email;
-    char art;
-    double preis;
+    String art;
+    String preis;
 
 
     public RadioButton verkaufen,vermieten;
@@ -40,11 +42,13 @@ public class einAngebotActivity extends AppCompatActivity {
         setContentView(R.layout.activity_ein_angebot);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        verkaufen= findViewById(R.id.verkaufenButton);
+        vermieten= findViewById(R.id.vermietenButton);
 
 
         Button abschickenButton = (Button) findViewById(R.id.buttonAbschicken);
         Button abbrechenButton = (Button) findViewById(R.id.buttonCancel);
-
+        getText();
         abschickenButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -107,6 +111,7 @@ public class einAngebotActivity extends AppCompatActivity {
             }
         }
     }
+    @SuppressLint("SetTextI18n")
     private void getText(){
         EditText stadtEditText = (EditText) findViewById(R.id.stadtTextEdit);
         EditText titelEditText = (EditText) findViewById(R.id.titelTextEdit);
@@ -114,23 +119,24 @@ public class einAngebotActivity extends AppCompatActivity {
         EditText beschreibungEditText = (EditText) findViewById(R.id.beschreibungTextEdit);
         EditText emailEditText = (EditText) findViewById(R.id.emailTextEdit);
 
-        stadt = getIntent().getStringExtra("stadt");
+        stadt = getIntent().getStringExtra("Stadt");
         email = getIntent().getStringExtra("Email");
         titel = getIntent().getStringExtra("Titel");
-        preis = getIntent().getDoubleExtra("Preis", 0);
+        preis = getIntent().getStringExtra("Preis");
         beschreibung = getIntent().getStringExtra("Beschreibung");
-        art = getIntent().getCharExtra("type", 'K');
-       // beschreibungEditText.setText(beschreibung);
-        stadtEditText.setText(stadt);
-        titelEditText.setText(titel);
-        emailEditText.setText(email);
-        preisEditText.setText(Double.toString(preis));
+        art = getIntent().getStringExtra("Art");
 
-        if(art == 'K'){
+        beschreibungEditText.setText(beschreibung, TextView.BufferType.EDITABLE);
+        stadtEditText.setText(stadt, TextView.BufferType.EDITABLE);
+        titelEditText.setText(titel, TextView.BufferType.EDITABLE);
+        emailEditText.setText(email, TextView.BufferType.EDITABLE);
+        preisEditText.setText(preis, TextView.BufferType.EDITABLE);
+
+        if(art.equals("K")){
             verkaufen.setChecked(true);
             vermieten.setChecked(false);
         }else
-        if (art == 'M'){
+        if (art.equals("M")){
             verkaufen.setChecked(false);
             vermieten.setChecked(true);
         }

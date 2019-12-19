@@ -103,7 +103,7 @@
         android:inputType="textEmailAddress" />
 
     <TextView
-        android:id="@+id/beschreibungTextViewTextView"
+        android:id="@+id/beschreibungTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Beschreibung"
@@ -111,46 +111,32 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="218dp">
 
-        <LinearLayout
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/beschreibungTextEdit"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/buttonAbschicken"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Abschicken" />
-
-            <Button
-                android:id="@+id/buttonCancel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Abbrechen" />
-        </LinearLayout>
+            android:layout_height="210dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
 
         <Button
-            android:id="@+id/buttonAbschicken2"
+            android:id="@+id/buttonAbschicken"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Abschicken" />
 
         <Button
-            android:id="@+id/buttonCancel2"
+            android:id="@+id/buttonCancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Abbrechen" />
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="210dp" />
-    </com.google.android.material.textfield.TextInputLayout>
-
+    </LinearLayout>
 
 </LinearLayout>
