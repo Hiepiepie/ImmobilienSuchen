@@ -3,7 +3,6 @@ package com.example.immobiliensuchen;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
@@ -53,8 +52,7 @@ public class einAngebotActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 checkPermission();
-                Intent myIntent = new Intent(einAngebotActivity.this, AngebotVerwaltenActivity.class);
-                startActivity(myIntent);
+                finish();
             }
         });
         abbrechenButton.setOnClickListener(new View.OnClickListener() {
