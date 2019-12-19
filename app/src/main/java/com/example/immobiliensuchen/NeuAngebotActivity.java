@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,13 +18,16 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class NeuAngebotActivity extends AppCompatActivity {
@@ -49,10 +53,10 @@ public class NeuAngebotActivity extends AppCompatActivity {
         setContentView(R.layout.activity_neu_angebot);
         Toolbar toolbar = findViewById(R.id.Angebote);
         setSupportActionBar(toolbar);
-        angebotContainerLegen();
 
-        Button abschickenButton = (Button) findViewById(R.id.buttonAbschicken);
-        Button abbrechenButton = (Button) findViewById(R.id.buttonCancel);
+
+        Button abschickenButton = (Button) findViewById(R.id.buttonAbschicken2);
+        Button abbrechenButton = (Button) findViewById(R.id.buttonCancel2);
 
         abschickenButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,7 +91,7 @@ public class NeuAngebotActivity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             ActivityCompat.requestPermissions(NeuAngebotActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
-                            saveToFile();
+
                         }
                     })
                     .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -117,154 +121,93 @@ public class NeuAngebotActivity extends AppCompatActivity {
     }
 
 
-    private String createText(){
-        String text;
+    public void readFile(){
+        String alleausgaben = "";
+        angebotContainer= new ArrayList<>();
+        try{
+            File myFile = new File(Environment.getExternalStorageDirectory().getPath()+"/"+ "NZSE2.txt");
+            FileInputStream fis = new FileInputStream(myFile);
+            BufferedReader myReader = new BufferedReader( new InputStreamReader(fis, StandardCharsets.UTF_8.name()));
+            String line;
+            while((line = myReader.readLine())!= null ){
+                alleausgaben += line;
+            }
+            JSONArray jsonArray = new JSONArray(alleausgaben);
+            for (int i = 0; i < jsonArray.length(); i++){
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                beitragID = Integer.parseInt(jsonObject.getString("BeitragsID"));
+                art = jsonObject.getString("Art");
+                titel = jsonObject.getString("Titel");
+                preis = Double.parseDouble(jsonObject.getString("Preis"));
+                stadt = jsonObject.getString("Stadt");
+                email = jsonObject.getString("Email");
+                beschreibung = jsonObject.getString("Beschreibung");
+                Angebote a = new Angebote(beitragID,art,stadt,preis,titel,email,beschreibung);
+                angebotContainer.add(a);
+            }
 
+
+        } catch (Exception e){
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+    }
+    private void saveToFile(){
+        readFile();
         int tempID = angebotContainer.size() + 1;
-        verkaufen = (RadioButton) findViewById(R.id.verkaufenButton);
-        vermieten = (RadioButton) findViewById(R.id.vermietenButton);
+        verkaufen = (RadioButton) findViewById(R.id.verkaufenButton2);
+        vermieten = (RadioButton) findViewById(R.id.vermietenButton2);
         if(verkaufen.isChecked()){
             art = "K";
         }else {
             art = "M";
         }
 
-        EditText stadtEditText = (EditText) findViewById(R.id.stadtTextEdit);
-        EditText titelEditText = (EditText) findViewById(R.id.titelTextEdit);
-        EditText preisEditText = (EditText) findViewById(R.id.preisTextEdit);
-        EditText beschreibungEditText = (EditText) findViewById(R.id.beschreibungTextEdit);
-        EditText emailEditText = (EditText) findViewById(R.id.emailTextEdit);
-
-
+        EditText stadtEditText = (EditText) findViewById(R.id.stadtTextEdit2);
+        EditText titelEditText = (EditText) findViewById(R.id.titelTextEdit2);
+        EditText preisEditText = (EditText) findViewById(R.id.preisTextEdit2);
+        EditText beschreibungEditText = (EditText) findViewById(R.id.beschreibungTextEdit2);
+        EditText emailEditText = (EditText) findViewById(R.id.emailTextEdit2);
         String s = preisEditText.getText().toString();
         preis = Double.parseDouble(s);
         stadt = stadtEditText.getText().toString();
         titel = titelEditText.getText().toString();
         beschreibung=beschreibungEditText.getText().toString();
         email = emailEditText.getText().toString();
-        // create first angebot
-        text = angebotContainer.get(0).BeitragID + "|" + angebotContainer.get(0).art + "|" + angebotContainer.get(0).preis + "|" +
-                angebotContainer.get(0).titel + "|" + angebotContainer.get(0).email + "|" + angebotContainer.get(0).beschreibung + "|";
-        // create second angebot until last angebot
-        for (int i = 1; i < angebotContainer.size(); i++){
-            text = text + "|" + angebotContainer.get(i).BeitragID + "|" + angebotContainer.get(i).art + "|" + angebotContainer.get(i).preis + "|" +
-                    angebotContainer.get(i).titel + "|" + angebotContainer.get(i).email + "|" + angebotContainer.get(i).beschreibung + "|";
-        }
-        // create new angebot
-        text = text + "|" + tempID +"|"+ art +"|"+ stadt +"|"+ preis +"|"+ titel +"|"+ email +"|"+ beschreibung +"|" ;
 
-        return text;
-
-    }
-    private void saveToFile(){
-        FileOutputStream fos = null;
-        String text = createText();
-
-        File file = new File(FILE_NAME);
-        boolean deleted = file.delete();
-
-
-
-        if (deleted) {
-            try {
-                fos = openFileOutput(FILE_NAME, MODE_PRIVATE);
-                fos.write(text.getBytes());
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                if (fos != null) {
-                    try {
-                        fos.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-    }
-    void angebotContainerLegen(){
-        int counter = 0;
-
-        angebotContainer.clear();
-        // read data from a file
-        readFile();
-        // split string
-        String[] aString = sb.toString().split("[|]");
-
-        for (String string : aString){
-            switch (counter){
-                case 0: {
-                    beitragID = Integer.parseInt(string);
-                    counter++;
-
-                    break;
-                }
-                case 1:{
-                    art = string;
-                    counter++;
-                    break;
-                }
-                case 2:{
-                    stadt = string;
-                    counter++;
-                    break;
-                }
-                case 3:{
-                    preis = Double.parseDouble(string);
-                    counter++;
-                    break;
-                }
-                case 4:{
-                    titel = string;
-                    counter++;
-                    break;
-                }
-                case 5: {
-                    email = string;
-                    counter++;
-                    break;
-                }
-                case 6: {
-                    beschreibung = string;
-                    counter++;
-                    break;
-                }
-                case 7:{
-                    Angebote a = new Angebote(beitragID,art,stadt,preis,titel,email,beschreibung);
-                    angebotContainer.add(a);
-                    counter = 0;
-                    break;
-                }
-            }
-        }
-
-
-
-    }
-    public void readFile(){
-        FileInputStream fis = null;
         try {
-            fis = openFileInput(FILE_NAME);
-            InputStreamReader isr = new InputStreamReader(fis);
-            BufferedReader br = new BufferedReader(isr);
-            String text;
-            while (( text = br.readLine())!= null){
-                sb.append(text).append('\n');
-            }
-        } catch (FileNotFoundException e) {
+
+            File myFile = new File(Environment.getExternalStorageDirectory().getPath() + "/" + "NZSE2.txt");
+            FileOutputStream fos = new FileOutputStream(myFile);
+
+            OutputStreamWriter myOutWriter = new OutputStreamWriter(fos);
+            JSONArray jsonarray = new JSONArray();
+
+                JSONObject object = new JSONObject();
+
+                object.put("BeitragsID",tempID);
+                object.put("Titel",titel);
+                object.put("Art",art);
+                object.put("Preis",preis);
+                object.put("Stadt",stadt);
+                object.put("Email",email);
+                object.put("Beschreibung",beschreibung);
+                jsonarray.put(object);
+
+            myOutWriter.append(jsonarray.toString());
+            myOutWriter.close();
+            fos.close();
+            Toast.makeText(this, angebotContainer.size()
+                            +
+                            " werden gespeichert!",
+                    Toast.LENGTH_SHORT).show();
+
+
+        } catch (Exception e) {
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if(fis != null) {
-                try {
-                    fis.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
     }
+
 
 }
