@@ -66,8 +66,7 @@ public class NeuAngebotActivity extends AppCompatActivity {
         abbrechenButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent myIntent = new Intent(NeuAngebotActivity.this, MaklerActivity.class);
-                startActivity(myIntent);
+                finish();
             }
         });
 
