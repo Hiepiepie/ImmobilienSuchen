@@ -21,12 +21,12 @@ import androidx.core.content.ContextCompat;
 
 import java.util.ArrayList;
 
-public class einAngebotActivity extends AppCompatActivity {
+public class AngebotAktualisierenActivity extends AppCompatActivity {
 
     private int STORAGE_PERMISSION_CODE = 1;
     public StringBuilder sb = new StringBuilder();
     private static final String FILE_NAME = "NZSE.txt";
-    static ArrayList<Angebote> angebotContainer = new ArrayList<Angebote>();
+    static ArrayList<Angebot> angebotContainer = new ArrayList<Angebot>();
     String titel, beschreibung, stadt, email;
     String art;
     String preis;
@@ -41,17 +41,20 @@ public class einAngebotActivity extends AppCompatActivity {
         setContentView(R.layout.activity_ein_angebot);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        verkaufen= findViewById(R.id.verkaufenButton);
-        vermieten= findViewById(R.id.vermietenButton);
 
+        verkaufen = findViewById(R.id.verkaufenButton);
+        vermieten = findViewById(R.id.vermietenButton);
 
         Button abschickenButton = (Button) findViewById(R.id.buttonAbschicken);
         Button abbrechenButton = (Button) findViewById(R.id.buttonCancel);
+
+        //Reading Data from Main Activity
         getText();
+
         abschickenButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                checkPermission();
+                //checkPermission();
                 finish();
             }
         });
@@ -63,23 +66,24 @@ public class einAngebotActivity extends AppCompatActivity {
         });
 
     }
-    private void checkPermission(){
-        if (ContextCompat.checkSelfPermission(einAngebotActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
-            Toast.makeText(einAngebotActivity.this, " You have already granted permission" , Toast.LENGTH_SHORT).show();
+
+    /*private void checkPermission(){
+        if (ContextCompat.checkSelfPermission(AngebotAktualisierenActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
+            Toast.makeText(AngebotAktualisierenActivity.this, " You have already granted permission" , Toast.LENGTH_SHORT).show();
 
         } else {
             requestStoragePermission();
         }
     }
     private void requestStoragePermission(){
-        if(ActivityCompat.shouldShowRequestPermissionRationale(einAngebotActivity.this,Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+        if(ActivityCompat.shouldShowRequestPermissionRationale(AngebotAktualisierenActivity.this,Manifest.permission.WRITE_EXTERNAL_STORAGE)){
             new AlertDialog.Builder(this)
                     .setTitle("Permission needed")
                     .setMessage("This permission is needed because of this and that")
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            ActivityCompat.requestPermissions(einAngebotActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
+                            ActivityCompat.requestPermissions(AngebotAktualisierenActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
 
                         }
                     })
@@ -107,7 +111,9 @@ public class einAngebotActivity extends AppCompatActivity {
                 Toast.makeText(this,"Permission DENIED", Toast.LENGTH_SHORT).show();
             }
         }
-    }
+    }*/
+
+
     @SuppressLint("SetTextI18n")
     private void getText(){
         EditText stadtEditText = (EditText) findViewById(R.id.stadtTextEdit);

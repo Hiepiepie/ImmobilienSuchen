@@ -1,5 +1,8 @@
 package com.example.immobiliensuchen;
 
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +13,16 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import java.util.ArrayList;
+
 public class AngebotActivity extends AppCompatActivity {
+
+    private Angebot angebot;
+    private LinearLayout gallery, information;
+    private LayoutInflater layoutInflater, layoutInflater1;
+    private View view;
+    private TextView titelText, preisText, contactText, beschreibungText;
+    private ImageView favoritView;
 
 
     @Override
@@ -20,31 +32,58 @@ public class AngebotActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        LinearLayout gallery = (LinearLayout) findViewById(R.id.gallery);
-        LinearLayout information = (LinearLayout) findViewById(R.id.information);
-        LayoutInflater li  = LayoutInflater.from(this);
-        LayoutInflater li2 = LayoutInflater.from(this);
+        angebot = getIntent().getParcelableExtra("angebot");
 
-        View v = li2.inflate(R.layout.activity_angebot, information, false);
-        TextView titelText = (TextView) findViewById(R.id.titelTextView);
-        TextView preisText = (TextView) findViewById(R.id.preisTextView);
-        TextView contactText = (TextView) findViewById(R.id.emailTextView);
-        TextView beschreibungText = (TextView) findViewById(R.id.beschreibungTextView);
+        gallery =  findViewById(R.id.gallery);
+        information =  findViewById(R.id.information);
 
-        contactText.setText(getIntent().getStringExtra("Email"));
-        beschreibungText.setText(getIntent().getStringExtra("Beschreibung"));
+        layoutInflater  = LayoutInflater.from(this);
+        layoutInflater1 = LayoutInflater.from(this);
 
-        titelText.setText(getIntent().getStringExtra("Titel"));
-        String s = getIntent().getStringExtra("Preis");
-        preisText.setText(s);
+        view = layoutInflater.inflate(R.layout.activity_angebot, information, false);
 
+        titelText =  findViewById(R.id.titelTextView);
+        preisText =  findViewById(R.id.preisTextView);
+        contactText =  findViewById(R.id.emailTextView);
+        beschreibungText =  findViewById(R.id.beschreibungTextView);
+        favoritView = findViewById(R.id.favorit);
 
-        for (int i= 0 ; i< 5 ; i++){
-            View view = li.inflate(R.layout.item, gallery, false);
-            ImageView imageView = view.findViewById(R.id.imageView3);
-            imageView.setImageResource(R.drawable.home);
-            gallery.addView(view);
+        titelText.setText(angebot.getTitel());
+        preisText.setText("Preis : " + Double.toString(angebot.getPreis()) + " Euro");
+        beschreibungText.setText("Beschreibung : \n" + angebot.getBeschreibung());
+        contactText.setText("Kontakt : " + angebot.getEmail());
+
+        for (int i = 0 ; i < angebot.getImagesId().size() ; i++){
+            View view1 = layoutInflater1.inflate(R.layout.item, gallery, false);
+
+            ImageView imageView = view1.findViewById(R.id.imageView3);
+            imageView.setImageResource(angebot.getImagesId().get(i));
+            gallery.addView(view1);
         }
+
+        if(angebot.getFavorit() == 1)
+            favoritView.setImageResource(R.drawable.star_on);
+
+
+        favoritView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(angebot.getFavorit() == 0) {
+                    favoritView.setImageResource(R.drawable.star_on);
+                    angebot.setFavorit(1);
+                    Intent intentWithResult = new Intent();
+                    intentWithResult.putExtra("angebot", angebot);
+                    setResult(1, intentWithResult);
+                }
+                else {
+                    favoritView.setImageResource(R.drawable.star_off);
+                    angebot.setFavorit(0);
+                    Intent intentWithResult = new Intent();
+                    intentWithResult.putExtra("angebot", angebot);
+                    setResult(1, intentWithResult);
+                }
+            }
+        });
 
     }
 

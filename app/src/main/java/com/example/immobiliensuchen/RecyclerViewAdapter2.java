@@ -33,7 +33,6 @@ public class RecyclerViewAdapter2 extends RecyclerView.Adapter<RecyclerViewAdapt
                               , ArrayList<String> mEmail, ArrayList<String> mBeschreibung,
                                 ArrayList<String> mArt,ArrayList<String> mStadt,
                                 ArrayList<ImageView> myImage, Context mContext) {
-
         this.mTitel = mTitel;
         this.mPreis = mPreis;
         this.mImage = myImage;
@@ -42,7 +41,6 @@ public class RecyclerViewAdapter2 extends RecyclerView.Adapter<RecyclerViewAdapt
         this.mContext = mContext;
         this.mArt=mArt;
         this.mStadt=mStadt;
-
     }
 
     @NonNull
@@ -71,7 +69,7 @@ public class RecyclerViewAdapter2 extends RecyclerView.Adapter<RecyclerViewAdapt
                 Log.d(TAG, "onClick: " + mTitel.get(position));
                 Toast.makeText(mContext,mTitel.get(position),Toast.LENGTH_SHORT).show();
 
-               Intent myIntent = new Intent(mContext, einAngebotActivity.class);
+               Intent myIntent = new Intent(mContext, AngebotAktualisierenActivity.class);
 
                 myIntent.putExtra("Email",mEmail.get(position));
                 myIntent.putExtra("Beschreibung",mBeschreibung.get(position));
@@ -97,8 +95,6 @@ public class RecyclerViewAdapter2 extends RecyclerView.Adapter<RecyclerViewAdapt
         RelativeLayout parentLayout;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-
-
             image = itemView.findViewById(R.id.images);
             Titel = itemView.findViewById(R.id.angebotTitel);
             Preis = itemView.findViewById(R.id.angebotpreis);

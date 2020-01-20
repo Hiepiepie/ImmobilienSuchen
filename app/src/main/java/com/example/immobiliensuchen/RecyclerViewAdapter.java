@@ -1,46 +1,35 @@
 package com.example.immobiliensuchen;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-
 import java.util.ArrayList;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>{
-    private static final String TAG = "RecyclerViewAdapter";
-    private ArrayList<String> mTitel;
-    private ArrayList<String> mPreis;
-    private ArrayList<ImageView> mImage;
-    private ArrayList<String> mEmail;
-    private ArrayList<String> mBeschreibung;
-    private Context mContext;
+    //private static final String TAG = "RecyclerViewAdapter";
 
-    public RecyclerViewAdapter(ArrayList<String> mTitel, ArrayList<String> mPreis
-                              ,ArrayList<String> mEmail, ArrayList<String> mBeschreibung,
-                               ArrayList<ImageView> myImage, Context mContext) {
+    private ArrayList<Angebot> angebotContainer;
+    private Angebot angebot;
+    private Context context;
 
-        this.mTitel = mTitel;
-        this.mPreis = mPreis;
-        this.mImage = myImage;
-        this.mBeschreibung =mBeschreibung;
-        this.mEmail = mEmail;
-        this.mContext = mContext;
+    static final int REQUEST_CODE = 0;
+
+    public RecyclerViewAdapter(ArrayList<Angebot> angebotContainer,  Context context) {
+        this.angebotContainer = angebotContainer;
+        this.context = context;
 
     }
 
-    @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_listitem, parent , false);
@@ -50,53 +39,47 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
-        Log.d(TAG, "onBindViewHolder: called.");
-        mImage.get(position).setImageResource(R.drawable.home);
-        Glide.with(mContext)
-        .asBitmap()
-        .load(mImage.get(position))
-        .into(holder.image);
-        holder.Titel.setText(mTitel.get(position));
-        holder.Preis.setText(mPreis.get(position));
-
+        //Log.d(TAG, "onBindViewHolder: called.");
+        angebot = angebotContainer.get(position);
+        holder.image.setImageResource(angebot.getImagesId().get(0));  //first picture in imagesId List
+        holder.Titel.setText(angebot.getTitel());
+        holder.Preis.setText(Double.toString(angebot.getPreis()));
 
         holder.parentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "onClick: " + mTitel.get(position));
-                Toast.makeText(mContext,mTitel.get(position),Toast.LENGTH_SHORT).show();
-
-               Intent myIntent = new Intent(mContext, AngebotActivity.class);
-
-                myIntent.putExtra("Email",mEmail.get(position));
-                myIntent.putExtra("Beschreibung",mBeschreibung.get(position));
-                myIntent.putExtra("Preis",mPreis.get(position));
-                myIntent.putExtra("Titel",mTitel.get(position));
-                
-                mContext.startActivity(myIntent);
-                
+                //Log.d(TAG, "onClick: " + mTitel.get(position));
+                //Toast.makeText(context,angebotContainer.get(position).getTitel(),Toast.LENGTH_SHORT).show();
+                angebot = angebotContainer.get(position);
+                Intent intent = new Intent(context, AngebotActivity.class);
+                intent.putExtra("angebot", angebot);
+                ((Activity) context).startActivityForResult(intent, REQUEST_CODE);
             }
         });
+
     }
 
     @Override
     public int getItemCount() {
-        return mTitel.size();
+        return angebotContainer.size();
     }
+
+
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         ImageView image;
         TextView Titel;
         TextView Preis;
         RelativeLayout parentLayout;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-
-
             image = itemView.findViewById(R.id.images);
             Titel = itemView.findViewById(R.id.angebotTitel);
             Preis = itemView.findViewById(R.id.angebotpreis);
             parentLayout = itemView.findViewById(R.id.parentLayout);
         }
     }
+
+
 }
