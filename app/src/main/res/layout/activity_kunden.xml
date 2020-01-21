@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".KundenActivity">
+    tools:context=".KundenActivity"
+    android:background="@drawable/background">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -27,11 +28,14 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_centerInParent="true"
-        android:layout_marginTop="381dp"
-        android:layout_marginEnd="92dp"
+        android:layout_marginTop="413dp"
+        android:layout_marginEnd="90dp"
         android:autofillHints=""
         android:ems="10"
-        android:inputType="textPersonName" />
+        android:hint="@string/stadt"
+        android:inputType="textPersonName"
+        android:textColor="@color/colorWhite"
+        android:textColorHint="@color/colorGrey" />
 
     <Button
         android:id="@+id/SuchenButton"
@@ -68,7 +72,9 @@
             android:layout_marginTop="0dp"
             android:layout_marginEnd="0dp"
             android:checked="true"
-            android:text="Ich moechte mieten" />
+            android:text="Ich moechte mieten"
+            android:textColor="@color/colorWhite"
+            android:textColorHint="@color/colorWhite" />
 
         <RadioButton
             android:id="@+id/KaufButton"
@@ -78,19 +84,10 @@
             android:layout_alignParentBottom="true"
             android:layout_marginEnd="0dp"
             android:layout_marginBottom="3dp"
-            android:text="Ich moechte kaufen" />
+            android:text="Ich moechte kaufen"
+            android:textColor="@color/colorWhite"
+            android:textColorHint="@color/colorWhite" />
     </RadioGroup>
-
-    <TextView
-        android:id="@+id/StadtTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="39dp"
-        android:layout_marginTop="392dp"
-        android:text="Stadt"
-        android:textSize="18dp" />
 
     <ImageView
         android:id="@+id/imageView"
