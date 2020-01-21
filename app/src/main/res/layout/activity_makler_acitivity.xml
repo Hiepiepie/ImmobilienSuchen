@@ -27,7 +27,8 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="199dp"
-        android:text="@string/neues_angebot_anlegen" />
+        android:fontFamily="@font/averia_libre_bold"
+        android:text="@string/neues_angebot_erstellen" />
 
     <Button
         android:id="@+id/angebotVerwaltenButton"

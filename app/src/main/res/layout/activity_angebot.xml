@@ -73,27 +73,29 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/titel"
-                android:textSize="24sp" />
+                android:textSize="24sp"
+                android:layout_marginBottom="20dp"/>
 
             <TextView
                 android:id="@+id/preisTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/preis"
-                android:textSize="18sp" />
+                android:textSize="24sp" />
 
             <TextView
                 android:id="@+id/emailTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/contact"
-                android:textSize="18sp" />
+                android:text="Kontakt"
+                android:textSize="24sp" />
 
             <TextView
                 android:id="@+id/beschreibungTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/beschreibung" />
+                android:text="Beschreibung"
+                android:textSize="24sp" />
         </LinearLayout>
 
 

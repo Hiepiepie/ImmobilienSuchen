@@ -68,6 +68,7 @@
         android:id="@+id/stadtTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/andada"
         android:text="@string/stadt"
         android:textSize="24sp" />
     <EditText
@@ -95,7 +96,7 @@
         android:id="@+id/preisTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Miete oder KaufPreis"
+        android:text="Preis"
         android:textSize="24sp" />
     <EditText
         android:id="@+id/preisTextEdit"
