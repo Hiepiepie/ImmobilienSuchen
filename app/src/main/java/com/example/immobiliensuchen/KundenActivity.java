@@ -30,6 +30,7 @@ import java.util.List;
 public class KundenActivity extends AppCompatActivity {
 
     static final int REQUEST_CODE = 0;
+    private final String className = this.getClass().getSimpleName();
 
     private ArrayList<Angebot> angebotContainer;
     private ArrayList<Angebot> searchedAngebotContainer;
@@ -46,6 +47,7 @@ public class KundenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_kunden);
         Toolbar toolbar = findViewById(R.id.Angebote);
         setSupportActionBar(toolbar);
+        setTitle("Kunden");
 
         Button suchenButton, favoritButton;
         suchenButton = findViewById(R.id.SuchenButton);
@@ -178,6 +180,8 @@ public class KundenActivity extends AppCompatActivity {
         if(searchedAngebotContainer.size()!= 0) {
             Intent intent = new Intent(KundenActivity.this, BrowseActivity.class);
             intent.putParcelableArrayListExtra("angebotContainer", searchedAngebotContainer);
+            intent.putExtra("prevActivity", className);
+            intent.putExtra("title", "Angebote in " + stadtName);
             startActivityForResult(intent, REQUEST_CODE);
         }
         else{
@@ -201,6 +205,8 @@ public class KundenActivity extends AppCompatActivity {
         if(searchedAngebotContainer.size()!= 0) {
             Intent intent = new Intent(KundenActivity.this, BrowseActivity.class);
             intent.putParcelableArrayListExtra("angebotContainer", searchedAngebotContainer);
+            intent.putExtra("prevActivity", this.getClass().getSimpleName());
+            intent.putExtra("title", "Meine Favoriten");
             startActivityForResult(intent,REQUEST_CODE);
         }
         else {
@@ -240,7 +246,7 @@ public class KundenActivity extends AppCompatActivity {
                 {
                     for(int j = 0 ; j < searchedAngebotContainer.size() ; j++){
                         if(angebotContainer.get(i).getBeitragID() == searchedAngebotContainer.get(j).getBeitragID()){
-                            angebotContainer.get(i).setFavorit(searchedAngebotContainer.get(j).getFavorit());
+                            angebotContainer.set(i,searchedAngebotContainer.get(j));
                         }
                     }
                 }

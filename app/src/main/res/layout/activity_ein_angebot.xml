@@ -13,11 +13,26 @@
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/Angebote"
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            app:popupTheme="@style/AppTheme.PopupOverlay">
+
+            <ImageView
+                android:id="@+id/delete"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="right"
+                android:layout_marginRight="20dp"
+                android:clickable="true"
+                android:focusable="true"
+                app:srcCompat="@drawable/delete"
+                android:tint="@color/colorWhite"/>
+
+        </androidx.appcompat.widget.Toolbar>
+
+
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -118,7 +133,9 @@
             android:id="@+id/beschreibungTextEdit"
             android:layout_width="match_parent"
             android:layout_height="210dp" />
+
     </com.google.android.material.textfield.TextInputLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

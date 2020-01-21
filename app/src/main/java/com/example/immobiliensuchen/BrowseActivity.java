@@ -33,6 +33,9 @@ public class BrowseActivity extends AppCompatActivity {
     private ArrayList<Angebot> angebotContainer;
     private Angebot angebot;
 
+    private RecyclerViewAdapter adapter;
+    private Intent intentWithResult;
+    private String prevActivity;
 
 
     @Override
@@ -41,9 +44,12 @@ public class BrowseActivity extends AppCompatActivity {
         setContentView(R.layout.activity_browse);
         Toolbar toolbar = (Toolbar) findViewById(R.id.Angebote);
         setSupportActionBar(toolbar);
+        setTitle(getIntent().getStringExtra("title"));
 
-//      pass variable from KundenActivity
+
+//      pass variable from KundenActivity or MaklerActivity
         angebotContainer = getIntent().getParcelableArrayListExtra("angebotContainer");
+        prevActivity = getIntent().getStringExtra("prevActivity");
         initRecyclerView();
     }
 
@@ -52,7 +58,7 @@ public class BrowseActivity extends AppCompatActivity {
     private void initRecyclerView(){
         //Log.d(TAG, "initRecyclerView: intit RecyclerView");
         recyclerView = findViewById(R.id.recyclerView);
-        RecyclerViewAdapter adapter = new RecyclerViewAdapter(angebotContainer,this);
+        adapter = new RecyclerViewAdapter(angebotContainer,this, prevActivity);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
@@ -66,14 +72,50 @@ public class BrowseActivity extends AppCompatActivity {
                 for(int i = 0 ; i < angebotContainer.size() ; i++)
                 {
                     if(angebotContainer.get(i).getBeitragID() == angebot.getBeitragID()){
-                        angebotContainer.get(i).setFavorit(angebot.getFavorit());
+                        angebotContainer.set(i,angebot);
                     }
                 }
-                RecyclerViewAdapter adapter = new RecyclerViewAdapter(angebotContainer,this);
+                adapter = new RecyclerViewAdapter(angebotContainer,this, prevActivity);
                 recyclerView.setAdapter(adapter);
-                Intent intentWithResult = new Intent();
+                intentWithResult = new Intent();
                 intentWithResult.putExtra("angebotContainer" , angebotContainer);
                 setResult(1, intentWithResult);
+                break;
+            case 2 :
+                angebot = data.getParcelableExtra("angebot");
+                for(int i = 0 ; i < angebotContainer.size() ; i++)
+                {
+                    if(angebotContainer.get(i).getBeitragID() == angebot.getBeitragID()){
+                        angebotContainer.set(i,angebot);
+                    }
+                }
+                Toast.makeText(this, "Angebot wird aktualisiert!",
+                        Toast.LENGTH_SHORT).show();
+                adapter = new RecyclerViewAdapter(angebotContainer,this, prevActivity);
+                recyclerView.setAdapter(adapter);
+                intentWithResult = new Intent();
+                intentWithResult.putExtra("angebotContainer" , angebotContainer);
+                setResult(4, intentWithResult);
+                break;
+            case 3 :
+                Toast.makeText(this, "Änderungen abgebrochen!",
+                        Toast.LENGTH_SHORT).show();
+                setResult(5);
+                break;
+            case 4 :
+                int beitragsId = data.getIntExtra("beitragsId", 0);
+                for(int i = 0 ; i < angebotContainer.size() ; i++)
+                {
+                    if(angebotContainer.get(i).getBeitragID() == beitragsId){
+                        angebotContainer.remove(i);
+                    }
+                }
+                Toast.makeText(this, "Angebot wird gelöscht!",
+                        Toast.LENGTH_SHORT).show();
+                recyclerView.setAdapter(adapter);
+                intentWithResult = new Intent();
+                intentWithResult.putExtra("angebotContainer" , angebotContainer);
+                setResult(4, intentWithResult);
                 break;
         }
     }

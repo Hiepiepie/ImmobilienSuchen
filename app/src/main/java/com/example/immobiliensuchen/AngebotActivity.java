@@ -31,6 +31,7 @@ public class AngebotActivity extends AppCompatActivity {
         setContentView(R.layout.activity_angebot);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        setTitle("Angebot");
 
         angebot = getIntent().getParcelableExtra("angebot");
 

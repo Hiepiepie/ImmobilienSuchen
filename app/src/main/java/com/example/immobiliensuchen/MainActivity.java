@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import android.content.pm.PackageManager;
@@ -38,6 +39,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setTitle("Immobilien Suche");
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
 
         if(checkWritePermission()) {
             checkFile(); //create "ImmobilienSuche" Directory in External Storage and create "Angebot.txt" with dummies Angebote

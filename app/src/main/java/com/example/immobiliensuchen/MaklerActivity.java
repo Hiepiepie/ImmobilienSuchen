@@ -33,17 +33,21 @@ import java.util.List;
 public class MaklerActivity extends AppCompatActivity {
 
     static final int REQUEST_CODE = 0;
+    private final String className = this.getClass().getSimpleName();
 
     Button neuAngebotButton, angebotVerwaltenButton;
     ArrayList<Angebot> angebotContainer = new ArrayList<>();
+    Angebot neuesAngebot;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_makler_acitivity);
-        Toolbar toolbar = findViewById(R.id.Angebote);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        setTitle("Makler");
+
         neuAngebotButton = findViewById(R.id.neuAngebotButton);
         angebotVerwaltenButton = findViewById(R.id.angebotVerwaltenButton);
 
@@ -61,8 +65,10 @@ public class MaklerActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 readFile();
-                Intent intent = new Intent(MaklerActivity.this, AngebotVerwaltenActivity.class);
+                Intent intent = new Intent(MaklerActivity.this, BrowseActivity.class);
                 intent.putParcelableArrayListExtra("angebotContainer", angebotContainer);
+                intent.putExtra("title", "Angebot verwalten");
+                intent.putExtra("prevActivity", className);
                 startActivityForResult(intent, REQUEST_CODE);
             }
         });
@@ -157,7 +163,7 @@ public class MaklerActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (resultCode){
-            case 1 :
+            case 1:
                 Angebot neuesAngebot = data.getParcelableExtra("neuesAngebot");
                 angebotContainer.add(neuesAngebot);
                 saveToFile();
@@ -171,6 +177,13 @@ public class MaklerActivity extends AppCompatActivity {
             case 3 :
                 Toast.makeText(this, "Error reading file",
                         Toast.LENGTH_SHORT).show();
+                break;
+
+            case 4:
+                angebotContainer = data.getParcelableArrayListExtra("angebotContainer");
+                saveToFile();
+                break;
+            case 5:
                 break;
         }
 

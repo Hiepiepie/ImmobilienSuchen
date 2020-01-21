@@ -21,13 +21,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private ArrayList<Angebot> angebotContainer;
     private Angebot angebot;
     private Context context;
+    private String prevActivity;
 
     static final int REQUEST_CODE = 0;
 
-    public RecyclerViewAdapter(ArrayList<Angebot> angebotContainer,  Context context) {
+    public RecyclerViewAdapter(ArrayList<Angebot> angebotContainer,  Context context, String prevActivity) {
         this.angebotContainer = angebotContainer;
         this.context = context;
-
+        this.prevActivity = prevActivity;
     }
 
     @Override
@@ -50,10 +51,20 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             public void onClick(View v) {
                 //Log.d(TAG, "onClick: " + mTitel.get(position));
                 //Toast.makeText(context,angebotContainer.get(position).getTitel(),Toast.LENGTH_SHORT).show();
-                angebot = angebotContainer.get(position);
-                Intent intent = new Intent(context, AngebotActivity.class);
-                intent.putExtra("angebot", angebot);
-                ((Activity) context).startActivityForResult(intent, REQUEST_CODE);
+
+                if(prevActivity.equals(KundenActivity.class.getSimpleName())) {
+                    angebot = angebotContainer.get(position);
+                    Intent intent = new Intent(context, AngebotActivity.class);
+                    intent.putExtra("angebot", angebot);
+                    ((Activity) context).startActivityForResult(intent, REQUEST_CODE);
+                }
+
+                else if(prevActivity.equals(MaklerActivity.class.getSimpleName())){
+                    angebot = angebotContainer.get(position);
+                    Intent intent = new Intent(context, AngebotAktualisierenActivity.class);
+                    intent.putExtra("angebot", angebot);
+                    ((Activity) context).startActivityForResult(intent, REQUEST_CODE);
+                }
             }
         });
 

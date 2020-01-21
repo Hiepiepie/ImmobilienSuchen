@@ -3,11 +3,13 @@ package com.example.immobiliensuchen;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,128 +22,134 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class AngebotAktualisierenActivity extends AppCompatActivity {
 
-    private int STORAGE_PERMISSION_CODE = 1;
-    public StringBuilder sb = new StringBuilder();
-    private static final String FILE_NAME = "NZSE.txt";
-    static ArrayList<Angebot> angebotContainer = new ArrayList<Angebot>();
-    String titel, beschreibung, stadt, email;
-    String art;
-    String preis;
+    private Angebot angebot;
+    private String titel, beschreibung, stadt, email, art;
+    double preis;
+    int beitragID, favorit;
+    private List<Integer> imagesId;
 
-
-    public RadioButton verkaufen,vermieten;
+    private RadioButton verkaufen,vermieten;
+    private ImageView deleteView;
+    private EditText stadtEditText, titelEditText, beschreibungEditText,emailEditText, preisEditText;
 
 
     @Override
+    @SuppressLint("SetTextI18n")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ein_angebot);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        setTitle("Angebot editieren");
 
         verkaufen = findViewById(R.id.verkaufenButton);
         vermieten = findViewById(R.id.vermietenButton);
+        deleteView = findViewById(R.id.delete);
 
         Button abschickenButton = (Button) findViewById(R.id.buttonAbschicken);
         Button abbrechenButton = (Button) findViewById(R.id.buttonCancel);
 
         //Reading Data from Main Activity
-        getText();
+        angebot = getIntent().getParcelableExtra("angebot");
+
+        stadtEditText = (EditText) findViewById(R.id.stadtTextEdit);
+        titelEditText = (EditText) findViewById(R.id.titelTextEdit);
+        preisEditText = (EditText) findViewById(R.id.preisTextEdit);
+        beschreibungEditText = (EditText) findViewById(R.id.beschreibungTextEdit);
+        emailEditText = (EditText) findViewById(R.id.emailTextEdit);
+
+        beschreibungEditText.setText(angebot.getBeschreibung(), TextView.BufferType.EDITABLE);
+        stadtEditText.setText(angebot.getStadt(), TextView.BufferType.EDITABLE);
+        titelEditText.setText(angebot.getTitel(), TextView.BufferType.EDITABLE);
+        emailEditText.setText(angebot.getEmail(), TextView.BufferType.EDITABLE);
+        preisEditText.setText(Double.toString(angebot.getPreis()), TextView.BufferType.EDITABLE);
+
+        if(angebot.getArt().equals("K")){
+            verkaufen.setChecked(true);
+            vermieten.setChecked(false);
+        }else if (angebot.getArt().equals("M")){
+            verkaufen.setChecked(false);
+            vermieten.setChecked(true);
+        }
 
         abschickenButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //checkPermission();
+                imagesId = angebot.getImagesId();
+                if(verkaufen.isChecked()){
+                    art = "K";
+                }else {
+                    art = "M";
+                }
+
+                String s = preisEditText.getText().toString();
+                beitragID = angebot.getBeitragID();
+                preis = Double.parseDouble(s);
+                stadt = stadtEditText.getText().toString();
+                titel = titelEditText.getText().toString();
+                beschreibung=beschreibungEditText.getText().toString();
+                email = emailEditText.getText().toString();
+                favorit = angebot.getFavorit();
+                Angebot neuesAngebot = new Angebot(beitragID,art,stadt,preis,titel,email,beschreibung,favorit, imagesId);
+
+                //Sending result and Extra back to Main Activity
+                Intent intentWithResult = new Intent();
+                intentWithResult.putExtra("angebot", neuesAngebot);
+                setResult(2, intentWithResult);
                 finish();
             }
         });
         abbrechenButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                setResult(3);
                 finish();
             }
         });
 
-    }
+        deleteView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Build an AlertDialog
+                AlertDialog.Builder builder = new AlertDialog.Builder(AngebotAktualisierenActivity.this);
 
-    /*private void checkPermission(){
-        if (ContextCompat.checkSelfPermission(AngebotAktualisierenActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
-            Toast.makeText(AngebotAktualisierenActivity.this, " You have already granted permission" , Toast.LENGTH_SHORT).show();
+                // Set a title for alert dialog
+                builder.setTitle("Select your answer.");
 
-        } else {
-            requestStoragePermission();
-        }
-    }
-    private void requestStoragePermission(){
-        if(ActivityCompat.shouldShowRequestPermissionRationale(AngebotAktualisierenActivity.this,Manifest.permission.WRITE_EXTERNAL_STORAGE)){
-            new AlertDialog.Builder(this)
-                    .setTitle("Permission needed")
-                    .setMessage("This permission is needed because of this and that")
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            ActivityCompat.requestPermissions(AngebotAktualisierenActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
+                // Ask the final question
+                builder.setMessage("Are you sure to hide?");
 
-                        }
-                    })
-                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    })
-                    .create().show();
+                // Set the alert dialog yes button click listener
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Do something when user clicked the Yes button
+                        // Set the TextView visibility GONE
+                        Intent intentWithResult = new Intent();
+                        intentWithResult.putExtra("beitragsId",angebot.getBeitragID());
+                        setResult(4, intentWithResult);
+                        finish();
+                    }
+                });
 
-        } else{
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
+                // Set the alert dialog no button click listener
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Do something when No button clicked
+//                        Toast.makeText(getApplicationContext(),
+//                                "abgebrochen",Toast.LENGTH_SHORT).show();
+                    }
+                });
 
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == STORAGE_PERMISSION_CODE){
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                Toast.makeText(this,"Permission GRANTED", Toast.LENGTH_SHORT ).show();
-            } else
-            {
-                Toast.makeText(this,"Permission DENIED", Toast.LENGTH_SHORT).show();
+                AlertDialog dialog = builder.create();
+                // Display the alert dialog on interface
+                dialog.show();
             }
-        }
-    }*/
-
-
-    @SuppressLint("SetTextI18n")
-    private void getText(){
-        EditText stadtEditText = (EditText) findViewById(R.id.stadtTextEdit);
-        EditText titelEditText = (EditText) findViewById(R.id.titelTextEdit);
-        EditText preisEditText = (EditText) findViewById(R.id.preisTextEdit);
-        EditText beschreibungEditText = (EditText) findViewById(R.id.beschreibungTextEdit);
-        EditText emailEditText = (EditText) findViewById(R.id.emailTextEdit);
-
-        stadt = getIntent().getStringExtra("Stadt");
-        email = getIntent().getStringExtra("Email");
-        titel = getIntent().getStringExtra("Titel");
-        preis = getIntent().getStringExtra("Preis");
-        beschreibung = getIntent().getStringExtra("Beschreibung");
-        art = getIntent().getStringExtra("Art");
-
-        beschreibungEditText.setText(beschreibung, TextView.BufferType.EDITABLE);
-        stadtEditText.setText(stadt, TextView.BufferType.EDITABLE);
-        titelEditText.setText(titel, TextView.BufferType.EDITABLE);
-        emailEditText.setText(email, TextView.BufferType.EDITABLE);
-        preisEditText.setText(preis, TextView.BufferType.EDITABLE);
-
-        if(art.equals("K")){
-            verkaufen.setChecked(true);
-            vermieten.setChecked(false);
-        }else
-        if (art.equals("M")){
-            verkaufen.setChecked(false);
-            vermieten.setChecked(true);
-        }
+        });
     }
 }
