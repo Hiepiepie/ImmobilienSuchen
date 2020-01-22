@@ -1,19 +1,14 @@
 package com.example.immobiliensuchen;
 
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import android.os.Environment;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -80,7 +75,7 @@ public class MaklerActivity extends AppCompatActivity {
         int beitragID, favorit;
         String alleausgaben = "";
         angebotContainer = new ArrayList<>();
-        List<Integer> imagesId = new ArrayList<>();
+        ArrayList<String> images;
 
         try{
             File myFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+ "/ImmobilienSuche/Angebote.txt");
@@ -106,14 +101,14 @@ public class MaklerActivity extends AppCompatActivity {
                 beschreibung = jsonObject.getString("Beschreibung");
                 favorit = jsonObject.getInt("Favorit");
                 JSONArray jsonArrayImages;
-                jsonArrayImages = jsonObject.getJSONArray("ImagesId");
+                jsonArrayImages = jsonObject.getJSONArray("Images");
 
-                imagesId = new ArrayList<>();
+                images = new ArrayList<>();
                 for (int j = 0; j < jsonArrayImages.length(); j++){
-                    imagesId.add(jsonArrayImages.getInt(j));
+                    images.add(jsonArrayImages.getString(j));
                 }
 
-                Angebot a = new Angebot(beitragID,art,stadt,preis,titel,email,beschreibung,favorit, imagesId);
+                Angebot a = new Angebot(beitragID,art,stadt,preis,titel,email,beschreibung,favorit, images);
                 angebotContainer.add(a);
             }
         } catch (Exception e){
@@ -143,11 +138,11 @@ public class MaklerActivity extends AppCompatActivity {
                 object.put("Beschreibung", a.getBeschreibung());
                 object.put("Favorit", a.getFavorit());
 
-                List<Integer> imagesId = a.getImagesId();
-                for (int j = 0; j < imagesId.size(); j++) {
-                    jsonArrayImages.put(imagesId.get(j));
+                ArrayList<String> images = a.getImages();
+                for (int j = 0; j < images.size(); j++) {
+                    jsonArrayImages.put(images.get(j));
                 }
-                object.put("ImagesId", jsonArrayImages);
+                object.put("Images", jsonArrayImages);
                 jsonarray.put(object);
             }
             myOutWriter.write(jsonarray.toString());

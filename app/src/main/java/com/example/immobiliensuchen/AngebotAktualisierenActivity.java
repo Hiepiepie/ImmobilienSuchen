@@ -23,7 +23,6 @@ public class AngebotAktualisierenActivity extends AppCompatActivity {
     private String titel, beschreibung, stadt, email, art;
     double preis;
     int beitragID, favorit;
-    private List<Integer> imagesId;
 
     private RadioButton verkaufen,vermieten;
     private ImageView deleteView;
@@ -72,7 +71,6 @@ public class AngebotAktualisierenActivity extends AppCompatActivity {
         abschickenButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                imagesId = angebot.getImagesId();
                 if(verkaufen.isChecked()){
                     art = "K";
                 }else {
@@ -87,7 +85,7 @@ public class AngebotAktualisierenActivity extends AppCompatActivity {
                 beschreibung=beschreibungEditText.getText().toString();
                 email = emailEditText.getText().toString();
                 favorit = angebot.getFavorit();
-                Angebot neuesAngebot = new Angebot(beitragID,art,stadt,preis,titel,email,beschreibung,favorit, imagesId);
+                Angebot neuesAngebot = new Angebot(beitragID,art,stadt,preis,titel,email,beschreibung,favorit, angebot.getImages());
 
                 //Sending result and Extra back to Main Activity
                 Intent intentWithResult = new Intent();

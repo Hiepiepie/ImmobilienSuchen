@@ -6,6 +6,8 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.content.Context;
 import android.os.Environment;
+import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -27,8 +29,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -55,19 +59,20 @@ import android.widget.ImageView;
 
 public class NeuAngebotActivity extends AppCompatActivity {
 
-    //private int STORAGE_PERMISSION_CODE = 1;
-    public StringBuilder sb = new StringBuilder();
+    private static final String pathToPicture = Environment.getExternalStorageDirectory().getAbsolutePath() + "/ImmobilienSuche/images";
+    private static final String TAG = "NeuAngebotActivity";
     private static final String FILE_NAME = "/ImmobilienSuche/Angebote.txt";
     String titel, beschreibung, stadt, email;
     String art;
     double preis;
     int beitragID, favorit;
-    List<Integer> imagesId;
-    RadioButton verkaufen,vermieten;
+    ArrayList<String> images;
+    ArrayList<Bitmap> imagesBitmap;
+    RadioButton verkaufen, vermieten;
     ImageView addPhoto;
-    List<Bitmap> photos;
     private LayoutInflater layoutInflater;
     private LinearLayout gallery;
+    private Bitmap selectedImage;
 
 
     @Override
@@ -79,13 +84,13 @@ public class NeuAngebotActivity extends AppCompatActivity {
         setTitle("Neues Angebot erstellen");
 
         addPhoto = findViewById(R.id.addphoto);
-        gallery =  findViewById(R.id.gallery);
+        gallery = findViewById(R.id.gallery);
         layoutInflater = LayoutInflater.from(this);
 
         //Reading Data from Main Activity
-        beitragID = getIntent().getIntExtra("neuBeitragsID",0) + 1;
+        beitragID = getIntent().getIntExtra("neuBeitragsID", -1) + 1;
 
-        if(beitragID == 0) {
+        if (beitragID == 0) {
             setResult(3);
             finish();
         }
@@ -93,15 +98,17 @@ public class NeuAngebotActivity extends AppCompatActivity {
         Button abschickenButton = findViewById(R.id.buttonAbschicken2);
         Button abbrechenButton = findViewById(R.id.buttonCancel2);
 
+        images = new ArrayList<>();
+        imagesBitmap = new ArrayList<>();
+
         abschickenButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                imagesId = new ArrayList<>();
                 verkaufen = (RadioButton) findViewById(R.id.verkaufenButton2);
                 vermieten = (RadioButton) findViewById(R.id.vermietenButton2);
-                if(verkaufen.isChecked()){
+                if (verkaufen.isChecked()) {
                     art = "K";
-                }else {
+                } else {
                     art = "M";
                 }
                 EditText stadtEditText = (EditText) findViewById(R.id.stadtTextEdit2);
@@ -113,16 +120,16 @@ public class NeuAngebotActivity extends AppCompatActivity {
                 preis = Double.parseDouble(s);
                 stadt = stadtEditText.getText().toString();
                 titel = titelEditText.getText().toString();
-                beschreibung=beschreibungEditText.getText().toString();
+                beschreibung = beschreibungEditText.getText().toString();
                 email = emailEditText.getText().toString();
                 favorit = 0;
-                if(imagesId.size() == 0){
-                    imagesId.add(R.drawable.house_example);
-                    imagesId.add(R.drawable.house_example);
-                    imagesId.add(R.drawable.house_example);
+                if (images.size() == 0) {
+                    images.add("default_image");
+                    images.add("default_image");
+                    images.add("default_image");
                 }
 
-                Angebot neuesAngebot = new Angebot(beitragID,art,stadt,preis,titel,email,beschreibung,favorit, imagesId);
+                Angebot neuesAngebot = new Angebot(beitragID, art, stadt, preis, titel, email, beschreibung, favorit, images);
 
                 //Sending result and Extra back to Main Activity
                 Intent intentWithResult = new Intent();
@@ -150,52 +157,66 @@ public class NeuAngebotActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        File fileImage = new File (pathToPicture);
+        for (int i = 0; i < imagesBitmap.size(); i++){
+            storeImage(imagesBitmap.get(i),images.get(i),fileImage);
+        }
+
+    }
+
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(resultCode != RESULT_CANCELED) {
+        if (resultCode != RESULT_CANCELED) {
             switch (requestCode) {
                 case 0:
                     if (resultCode == RESULT_OK && data != null) {
-                        Bitmap selectedImage = (Bitmap) data.getExtras().get("data");
-                        //addPhoto.setImageBitmap(selectedImage);
+                        selectedImage = (Bitmap) data.getExtras().get("data");
 
                         View view = layoutInflater.inflate(R.layout.item, gallery, false);
 
                         ImageView imageView = view.findViewById(R.id.imageView3);
                         imageView.setImageBitmap(selectedImage);
                         gallery.addView(view);
+
+                        images.add(beitragID + "_" + imagesBitmap.size());
+                        imagesBitmap.add(selectedImage);
                     }
 
                     break;
                 case 1:
                     if (resultCode == RESULT_OK && data != null) {
-                        Uri selectedImage =  data.getData();
+                        Uri selectedImage = data.getData();
                         String[] filePathColumn = {MediaStore.Images.Media.DATA};
                         if (selectedImage != null) {
                             Cursor cursor = getContentResolver().query(selectedImage,
                                     filePathColumn, null, null, null);
                             if (cursor != null) {
                                 cursor.moveToFirst();
-
                                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                                 String picturePath = cursor.getString(columnIndex);
-                                View view = layoutInflater.inflate(R.layout.item, gallery, false);
 
+                                View view = layoutInflater.inflate(R.layout.item, gallery, false);
                                 ImageView imageView = view.findViewById(R.id.imageView3);
                                 imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
                                 gallery.addView(view);
-                                //addPhoto.setImageBitmap(BitmapFactory.decodeFile(picturePath));
                                 cursor.close();
+
+                                images.add(beitragID + "_" + imagesBitmap.size());
+                                imagesBitmap.add(BitmapFactory.decodeFile(picturePath));
                             }
                         }
 
                     }
-                   break;
+                    break;
             }
         }
     }
 
     private void selectImage(Context context) {
-        final CharSequence[] options = { "Take Photo", "Choose from Gallery","Cancel" };
+        final CharSequence[] options = {"Take Photo", "Choose from Gallery", "Delete last photo", "Cancel"};
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Add Picture..");
@@ -211,13 +232,40 @@ public class NeuAngebotActivity extends AppCompatActivity {
 
                 } else if (options[item].equals("Choose from Gallery")) {
                     Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    startActivityForResult(pickPhoto , 1);
+                    startActivityForResult(pickPhoto, 1);
 
-                } else if (options[item].equals("Cancel")) {
+                } else if (options[item].equals("Delete last photo")) {
+                    dialog.dismiss();
+                    if(images.size() > 0){
+                        images.remove(images.size()-1);
+                        imagesBitmap.remove(imagesBitmap.size()-1);
+                        gallery.removeViewAt(images.size()+1);
+                    }
+                    else {
+                        Toast t;
+                        t = Toast.makeText(NeuAngebotActivity.this.getApplicationContext(),
+                                "No photo added", Toast.LENGTH_SHORT);
+                        t.show();
+                    }
+                }
+                else if (options[item].equals("Cancel")) {
                     dialog.dismiss();
                 }
             }
         });
         builder.show();
+    }
+
+    private void storeImage(Bitmap image, String filename, File imageDir) {
+        File pictureFile = new File(imageDir + File.separator + filename);
+        try {
+            FileOutputStream fos = new FileOutputStream(pictureFile);
+            image.compress(Bitmap.CompressFormat.PNG, 90, fos);
+            fos.close();
+        } catch (FileNotFoundException e) {
+            Log.d(TAG, "File not found: " + e.getMessage());
+        } catch (IOException e) {
+            Log.d(TAG, "Error accessing file: " + e.getMessage());
+        }
     }
 }

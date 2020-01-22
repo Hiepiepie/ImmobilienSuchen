@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 
+import android.util.Base64;
 import android.view.View;
 
 import android.widget.Button;
@@ -25,12 +26,22 @@ import org.json.JSONObject;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.File;
+import java.io.IOException;
+import java.io.FileNotFoundException;
+import java.io.ByteArrayOutputStream;
+import java.util.Base64.Encoder;
 import java.util.List;
+
+import android.graphics.BitmapFactory;
+import android.graphics.Bitmap;
+
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "MainActivity";
     private static final int PERMISSION_REQUEST_CODE = 100;
 
     Button kundenB, maklerB;
@@ -126,28 +137,35 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(MainActivity.this, "File Exist", Toast.LENGTH_LONG).show();
         }
 
+        File imageDir = new File(dir, "images");
+        if (!imageDir.exists()){
+            imageDir.mkdir();
+            Bitmap defaultImage = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.house_example);
+            storeImage(defaultImage,"default_image", imageDir);
+        }
+
         File myFile = new File(dir, "Angebote.txt");
 
         if (!myFile.exists()) {       //dummy Angebote
             ArrayList<Angebot> angebotContainer = new ArrayList<Angebot>();
-            List<Integer> imagesId = new ArrayList<>();
+            ArrayList<String> images = new ArrayList<>();
 
-            imagesId.add(R.drawable.house_example);
-            imagesId.add(R.drawable.house_example);
-            imagesId.add(R.drawable.house_example);
+            images.add("default_image");
+            images.add("default_image");
+            images.add("default_image");
 
             Angebot a1 = new Angebot(1, "M", "Darmstadt", 370, "ein Zimmer in ein WG ",
-                    "Musterhaus1@gmail.com", "Beschreibung von Haus 1",0, imagesId);
+                    "Musterhaus1@gmail.com", "Beschreibung von Haus 1",0, images);
             Angebot a2 = new Angebot(2, "K", "Darmstadt", 350120, "Schönes Haus im Stadtmitte",
-                    "Musterhaus2@gmail.com", "Beschreibung von Haus 2",0,imagesId);
+                    "Musterhaus2@gmail.com", "Beschreibung von Haus 2",0,images);
             Angebot a3 = new Angebot(3, "K", "Darmstadt", 250000, "Haus im Stadtmitte",
-                    "Musterhaus3@gmail.com", "Beschreibung von Haus 3",0, imagesId);
+                    "Musterhaus3@gmail.com", "Beschreibung von Haus 3",0, images);
             Angebot a4 = new Angebot(4, "K", "Darmstadt", 1000000, "Größe Haus",
-                    "Musterhaus4@gmail.com", "Beschreibung von Haus 4",0, imagesId);
+                    "Musterhaus4@gmail.com", "Beschreibung von Haus 4",0, images);
             Angebot a5 = new Angebot(5, "M", "Darmstadt", 300, "WG-Zimmer",
-                    "Musterhaus5@gmail.com", "Beschreibung von Haus 5", 0, imagesId);
+                    "Musterhaus5@gmail.com", "Beschreibung von Haus 5", 0, images);
             Angebot a6 = new Angebot(6, "M", "Darmstadt", 1000, "3 Zimmer Wohnung",
-                    "Musterhaus6@gmail.com", "Beschreibung von Haus 6", 0,imagesId);
+                    "Musterhaus6@gmail.com", "Beschreibung von Haus 6", 0,images);
             angebotContainer.add(a1);
             angebotContainer.add(a2);
             angebotContainer.add(a3);
@@ -162,8 +180,8 @@ public class MainActivity extends AppCompatActivity {
                 JSONArray jsonArrayImages = new JSONArray();
                 JSONArray jsonarray = new JSONArray();
 
-                for (int i = 0; i < imagesId.size(); i++) {
-                    jsonArrayImages.put(imagesId.get(i));
+                for (int i = 0; i < images.size(); i++) {
+                    jsonArrayImages.put(images.get(i));
                 }
 
                 for (int i = 0; i < angebotContainer.size(); i++) {
@@ -177,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
                     object.put("Email", a.getEmail());
                     object.put("Beschreibung", a.getBeschreibung());
                     object.put("Favorit", a.getFavorit());
-                    object.put("ImagesId", jsonArrayImages);
+                    object.put("Images", jsonArrayImages);
                     jsonarray.put(object);
                 }
                 myOutWriter.write(jsonarray.toString());
@@ -204,6 +222,19 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(this,"Permission DENIED", Toast.LENGTH_SHORT).show();
                 }
                 break;
+        }
+    }
+
+    private void storeImage(Bitmap image, String filename, File imageDir) {
+        File pictureFile = new File(imageDir + File.separator + filename);
+        try {
+            FileOutputStream fos = new FileOutputStream(pictureFile);
+            image.compress(Bitmap.CompressFormat.PNG, 90, fos);
+            fos.close();
+        } catch (FileNotFoundException e) {
+            Log.d(TAG, "File not found: " + e.getMessage());
+        } catch (IOException e) {
+            Log.d(TAG, "Error accessing file: " + e.getMessage());
         }
     }
 

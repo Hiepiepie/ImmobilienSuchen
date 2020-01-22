@@ -3,6 +3,10 @@ package com.example.immobiliensuchen;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Environment;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +17,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>{
     //private static final String TAG = "RecyclerViewAdapter";
 
+    private static final String pathToPicture = Environment.getExternalStorageDirectory().getAbsolutePath() + "/ImmobilienSuche/images";
     private ArrayList<Angebot> angebotContainer;
     private Angebot angebot;
     private Context context;
@@ -42,7 +48,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         //Log.d(TAG, "onBindViewHolder: called.");
         angebot = angebotContainer.get(position);
-        holder.image.setImageResource(angebot.getImagesId().get(0));  //first picture in imagesId List
+        holder.image.setImageBitmap(BitmapFactory.decodeFile(pathToPicture + File.separator + angebot.getImages().get(0)));  //first picture in imagesId List
         holder.Titel.setText(angebot.getTitel());
         holder.Preis.setText(Double.toString(angebot.getPreis()));
 
@@ -91,6 +97,5 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             parentLayout = itemView.findViewById(R.id.parentLayout);
         }
     }
-
 
 }

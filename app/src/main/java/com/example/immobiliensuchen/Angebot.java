@@ -2,7 +2,6 @@ package com.example.immobiliensuchen;
 
 import android.os.Parcelable;
 import android.os.Parcel;
-import android.widget.ImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,9 +15,9 @@ class Angebot implements Parcelable {
     private String beschreibung;
     private String email;
     private double preis;
-    private List<Integer> imagesId;
+    private ArrayList<String> images;
 
-    public Angebot(int BeitragID, String art, String stadt, double preis, String titel, String email, String beschreibung, int favorit, List<Integer> imagesId)
+    public Angebot(int BeitragID, String art, String stadt, double preis, String titel, String email, String beschreibung, int favorit, ArrayList<String> images)
     {
         this.beitragID = BeitragID;
         this.art = art;
@@ -27,7 +26,7 @@ class Angebot implements Parcelable {
         this.stadt = stadt;
         this.preis = preis;
         this.email = email;
-        this.imagesId = imagesId;
+        this.images = images;
         this.favorit = favorit;  //0 = false, 1 = true;
     }
 
@@ -97,12 +96,12 @@ class Angebot implements Parcelable {
         this.email = email;
     }
 
-    public List<Integer> getImagesId() {
-        return imagesId;
+    public ArrayList<String> getImages() {
+        return images;
     }
 
-    public void setImagesId(List<Integer> imagesId) {
-        this.imagesId = imagesId;
+    public void setImages(ArrayList<String> images) {
+        this.images = images;
     }
 
 
@@ -115,8 +114,8 @@ class Angebot implements Parcelable {
         email = in.readString();
         beschreibung = in.readString();
         favorit = in.readInt();
-        imagesId = new ArrayList<>();
-        in.readList(imagesId, Integer.class.getClassLoader());
+        images = new ArrayList<>();
+        in.readList(images, String.class.getClassLoader());
     }
 
     @Override
@@ -134,7 +133,7 @@ class Angebot implements Parcelable {
         out.writeString(email);
         out.writeString(beschreibung);
         out.writeInt(favorit);
-        out.writeList(imagesId);
+        out.writeList(images);
     }
 
     public static final Parcelable.Creator<Angebot> CREATOR = new Parcelable.Creator<Angebot>() {

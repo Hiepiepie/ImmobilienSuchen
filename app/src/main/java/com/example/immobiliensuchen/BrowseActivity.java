@@ -1,13 +1,17 @@
 package com.example.immobiliensuchen;
 
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -37,6 +41,8 @@ public class BrowseActivity extends AppCompatActivity {
     private Intent intentWithResult;
     private String prevActivity;
 
+    private ImageView sortImageView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,14 +52,20 @@ public class BrowseActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         setTitle(getIntent().getStringExtra("title"));
 
+        sortImageView = findViewById(R.id.sort);
 
 //      pass variable from KundenActivity or MaklerActivity
         angebotContainer = getIntent().getParcelableArrayListExtra("angebotContainer");
         prevActivity = getIntent().getStringExtra("prevActivity");
         initRecyclerView();
+
+        sortImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sortAngebot(BrowseActivity.this);
+            }
+        });
     }
-
-
 
     private void initRecyclerView(){
         //Log.d(TAG, "initRecyclerView: intit RecyclerView");
@@ -120,5 +132,33 @@ public class BrowseActivity extends AppCompatActivity {
         }
     }
 
+    private void sortAngebot(Context context) {
+        final CharSequence[] options = {"Titel aufsteigend", "Titel absteigend", "Preis aufsteigend", "Preis absteigend"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Angebote Sortierung");
+
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+
+                if (options[item].equals("Titel aufsteigend")) {
+
+
+                } else if (options[item].equals("Titel absteigend")) {
+
+
+                } else if (options[item].equals("Preis aufsteigend")) {
+                    dialog.dismiss();
+
+                }
+                else if (options[item].equals("Preis absteigend")) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        builder.show();
+    }
 }
 

@@ -1,9 +1,8 @@
 package com.example.immobiliensuchen;
 
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -13,10 +12,15 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import java.util.ArrayList;
+import android.util.Base64;
+import android.graphics.BitmapFactory;
+import android.graphics.Bitmap;
+
+import java.io.File;
 
 public class AngebotActivity extends AppCompatActivity {
 
+    private static final String pathToPicture = Environment.getExternalStorageDirectory().getAbsolutePath() + "/ImmobilienSuche/images";
     private Angebot angebot;
     private LinearLayout gallery, information;
     private LayoutInflater layoutInflater, layoutInflater1;
@@ -54,11 +58,10 @@ public class AngebotActivity extends AppCompatActivity {
         beschreibungText.setText("Beschreibung : \n" + angebot.getBeschreibung());
         contactText.setText("Kontakt : " + angebot.getEmail());
 
-        for (int i = 0 ; i < angebot.getImagesId().size() ; i++){
+        for (int i = 0; i < angebot.getImages().size() ; i++){
             View view1 = layoutInflater1.inflate(R.layout.item, gallery, false);
-
             ImageView imageView = view1.findViewById(R.id.imageView3);
-            imageView.setImageResource(angebot.getImagesId().get(i));
+            imageView.setImageBitmap(BitmapFactory.decodeFile(pathToPicture + File.separator + angebot.getImages().get(i)));
             gallery.addView(view1);
         }
 
@@ -86,6 +89,11 @@ public class AngebotActivity extends AppCompatActivity {
             }
         });
 
+    }
+    private Bitmap getBitmapFromString(String stringPicture) {
+        byte[] decodedString = Base64.decode(stringPicture, Base64.DEFAULT);
+        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        return decodedByte;
     }
 
 }

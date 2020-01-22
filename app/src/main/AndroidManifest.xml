@@ -26,10 +26,6 @@
             android:label="@string/title_activity_browse"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".AngebotVerwaltenActivity"
-            android:label="@string/title_activity_angebot_verwalten"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".NeuAngebotActivity"
             android:label="@string/title_activity_neu_angebot"
             android:theme="@style/AppTheme.NoActionBar" />
