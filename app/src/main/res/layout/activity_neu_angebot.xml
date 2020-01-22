@@ -1,113 +1,145 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".NeuAngebotActivity">
-
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/Angebote"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
-
-    </com.google.android.material.appbar.AppBarLayout>
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="69dp"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".NeuAngebotActivity">
 
-        <RadioGroup
+
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay">
 
-            <RadioButton
-                android:id="@+id/verkaufenButton2"
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/Angebote"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+
+        <HorizontalScrollView
+            android:id="@+id/horizontalscroll"
+            android:layout_width="411dp"
+            android:layout_height="150dp"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:id="@+id/gallery"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="Verkaufen"
-                android:checked="true"
-                />
+                android:orientation="horizontal" >
 
-            <RadioButton
-                android:id="@+id/vermietenButton2"
-                android:layout_width="wrap_content"
-                android:layout_height="69dp"
-                android:layout_weight="1"
-                android:text="Vermieten" />
-        </RadioGroup>
-    </LinearLayout>
+                <ImageView
+                    android:id="@+id/addphoto"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:adjustViewBounds="true"
+                    android:contextClickable="true"
+                    android:visibility="visible"
+                    app:srcCompat="@drawable/add_image"/>
 
-    <TextView
-        android:id="@+id/stadtTextView2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/stadt"
-        android:textSize="24sp" />
-    <EditText
-        android:id="@+id/stadtTextEdit2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName" />
+            </LinearLayout>
 
-    <TextView
-        android:id="@+id/TitelTextView2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Titel des Angebots"
-        android:textSize="24sp" />
+        </HorizontalScrollView>
 
-    <EditText
-        android:id="@+id/titelTextEdit2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="69dp"
+            android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/preisTextView2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/preis"
-        android:textSize="24sp" />
-    <EditText
-        android:id="@+id/preisTextEdit2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="number" />
-    <TextView
-        android:id="@+id/contactTextView2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/email"
-        android:textSize="24sp"/>
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
 
-    <EditText
-        android:id="@+id/emailTextEdit2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textEmailAddress" />
+                <RadioButton
+                    android:id="@+id/verkaufenButton2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="Verkaufen"
+                    android:checked="true"
+                    />
 
-    <TextView
-        android:id="@+id/beschreibungTextView2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Beschreibung"
-        android:textSize="24sp" />
+                <RadioButton
+                    android:id="@+id/vermietenButton2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="69dp"
+                    android:layout_weight="1"
+                    android:text="Vermieten" />
+            </RadioGroup>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/stadtTextView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/stadt"
+            android:textSize="24sp" />
+        <EditText
+            android:id="@+id/stadtTextEdit2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName" />
+
+        <TextView
+            android:id="@+id/TitelTextView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Titel des Angebots"
+            android:textSize="24sp" />
+
+        <EditText
+            android:id="@+id/titelTextEdit2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName" />
+
+        <TextView
+            android:id="@+id/preisTextView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/preis"
+            android:textSize="24sp" />
+        <EditText
+            android:id="@+id/preisTextEdit2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="number" />
+        <TextView
+            android:id="@+id/contactTextView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/email"
+            android:textSize="24sp"/>
+
+        <EditText
+            android:id="@+id/emailTextEdit2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textEmailAddress" />
+
+        <TextView
+            android:id="@+id/beschreibungTextView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Beschreibung"
+            android:textSize="24sp" />
 
 
 
@@ -137,6 +169,6 @@
         </LinearLayout>
 
 
+    </LinearLayout>
 
-
-</LinearLayout>
+</ScrollView>
