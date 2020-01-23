@@ -2,11 +2,11 @@ package com.example.immobiliensuchen;
 
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 
 import android.os.Bundle;
 import android.os.Environment;
 
-import android.util.Base64;
 import android.view.View;
 
 import android.widget.Button;
@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import android.content.pm.PackageManager;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -28,9 +27,6 @@ import java.io.OutputStreamWriter;
 import java.io.File;
 import java.io.IOException;
 import java.io.FileNotFoundException;
-import java.io.ByteArrayOutputStream;
-import java.util.Base64.Encoder;
-import java.util.List;
 
 import android.graphics.BitmapFactory;
 import android.graphics.Bitmap;
@@ -43,8 +39,6 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     private static final int PERMISSION_REQUEST_CODE = 100;
-
-    Button kundenB, maklerB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,11 +56,11 @@ public class MainActivity extends AppCompatActivity {
             requestWritePermission();
         }
 
-        ImageView img = (ImageView) findViewById(R.id.imageView1);
+        ImageView img = findViewById(R.id.imageView1);
         img.setImageResource(R.drawable.home1);
 
-        kundenB = (Button) findViewById(R.id.KundenButton);
-        maklerB = (Button) findViewById(R.id.maklerButton);
+        Button kundenB = findViewById(R.id.KundenButton);
+        Button maklerB = findViewById(R.id.maklerButton);
 
         kundenB.setOnClickListener(new View.OnClickListener() {
             @Override

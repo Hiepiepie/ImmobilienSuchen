@@ -62,7 +62,7 @@ public class BrowseActivity extends AppCompatActivity {
         sortImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sortAngebot(BrowseActivity.this);
+                sortMenu(BrowseActivity.this);
             }
         });
     }
@@ -132,8 +132,8 @@ public class BrowseActivity extends AppCompatActivity {
         }
     }
 
-    private void sortAngebot(Context context) {
-        final CharSequence[] options = {"Titel aufsteigend", "Titel absteigend", "Preis aufsteigend", "Preis absteigend"};
+    private void sortMenu(Context context) {
+        final CharSequence[] options = {"Neueste", "Preis aufsteigend", "Preis absteigend"};
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Angebote Sortierung");
@@ -142,23 +142,65 @@ public class BrowseActivity extends AppCompatActivity {
 
             @Override
             public void onClick(DialogInterface dialog, int item) {
-
-                if (options[item].equals("Titel aufsteigend")) {
-
-
-                } else if (options[item].equals("Titel absteigend")) {
-
-
-                } else if (options[item].equals("Preis aufsteigend")) {
+                if(options[item].equals("Neueste")){
+                    sortNeueste();
+                    adapter = new RecyclerViewAdapter(angebotContainer,BrowseActivity.this, prevActivity);
+                    recyclerView.setAdapter(adapter);
                     dialog.dismiss();
-
+                }
+                else if (options[item].equals("Preis aufsteigend")) {
+                    sortPreisAuf();
+                    adapter = new RecyclerViewAdapter(angebotContainer,BrowseActivity.this, prevActivity);
+                    recyclerView.setAdapter(adapter);
+                    dialog.dismiss();
                 }
                 else if (options[item].equals("Preis absteigend")) {
+                    sortPreisAb();
+                    adapter = new RecyclerViewAdapter(angebotContainer,BrowseActivity.this, prevActivity);
+                    recyclerView.setAdapter(adapter);
                     dialog.dismiss();
                 }
             }
         });
         builder.show();
     }
+
+    private void sortNeueste(){
+        Angebot tempAngebot;
+        for (int i = 0 ; i < angebotContainer.size()-1;i++){
+            if(angebotContainer.get(i).getBeitragID()>angebotContainer.get(i+1).getBeitragID())
+                continue;
+            tempAngebot = angebotContainer.get(i);
+            angebotContainer.set(i,angebotContainer.get(i+1));
+            angebotContainer.set(i+1,tempAngebot);
+            sortNeueste();
+        }
+    }
+
+    private void sortPreisAuf(){
+        Angebot tempAngebot;
+        for (int i = 0 ; i < angebotContainer.size()-1;i++){
+            if(Double.compare(angebotContainer.get(i).getPreis(), angebotContainer.get(i+1).getPreis())<0)
+                continue;
+            tempAngebot = angebotContainer.get(i);
+            angebotContainer.set(i,angebotContainer.get(i+1));
+            angebotContainer.set(i+1,tempAngebot);
+            sortPreisAuf();
+        }
+    }
+
+    private void sortPreisAb(){
+        Angebot tempAngebot;
+        for (int i = 0 ; i < angebotContainer.size()-1;i++){
+            if(Double.compare(angebotContainer.get(i).getPreis(), angebotContainer.get(i+1).getPreis())>0)
+                continue;
+            tempAngebot = angebotContainer.get(i);
+            angebotContainer.set(i,angebotContainer.get(i+1));
+            angebotContainer.set(i+1,tempAngebot);
+            sortPreisAb();
+        }
+    }
+
+
 }
 

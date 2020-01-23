@@ -114,12 +114,13 @@
             android:layout_height="wrap_content"
             android:text="@string/preis"
             android:textSize="24sp" />
+
         <EditText
             android:id="@+id/preisTextEdit2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="number" />
+            android:inputType="numberSigned|number" />
         <TextView
             android:id="@+id/contactTextView2"
             android:layout_width="match_parent"
