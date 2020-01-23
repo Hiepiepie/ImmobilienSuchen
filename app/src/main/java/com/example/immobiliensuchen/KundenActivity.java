@@ -24,22 +24,18 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class KundenActivity extends AppCompatActivity {
 
+    private static final String TAG = "KundenActivity";
     static final int REQUEST_CODE = 0;
     private final String className = this.getClass().getSimpleName();
 
     private ArrayList<Angebot> angebotContainer;
     private ArrayList<Angebot> searchedAngebotContainer;
-    private double preis;
-    private int beitragID;
 
     private String stadtName, searchedArt;
-    private boolean radioKaufen = false;
-    private boolean radioMieten = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -225,17 +221,12 @@ public class KundenActivity extends AppCompatActivity {
         // Check which checkbox was clicked
 
         if (cb1.isChecked()) {
-            radioKaufen = true;
-            radioMieten = false;
             searchedArt = "K";
         }
         if (cb2.isChecked()) {
-            radioKaufen = false;
-            radioMieten = true;
             searchedArt = "M";
         }
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

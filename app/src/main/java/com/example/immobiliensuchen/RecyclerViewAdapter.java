@@ -21,8 +21,8 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>{
-    //private static final String TAG = "RecyclerViewAdapter";
 
+    private static final String TAG = "RecyclerViewAdapter";
     private static final String pathToPicture = Environment.getExternalStorageDirectory().getAbsolutePath() + "/ImmobilienSuche/images";
     private ArrayList<Angebot> angebotContainer;
     private Angebot angebot;

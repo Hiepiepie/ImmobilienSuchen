@@ -19,10 +19,12 @@ import java.util.List;
 
 public class AngebotAktualisierenActivity extends AppCompatActivity {
 
+    private static final String TAG = "AngebotAktualisierenActivity";
+
     private Angebot angebot;
     private String titel, beschreibung, stadt, email, art;
-    double preis;
-    int beitragID, favorit;
+    private double preis;
+    private int beitragID, favorit;
 
     private RadioButton verkaufen,vermieten;
     private ImageView deleteView;
@@ -109,13 +111,13 @@ public class AngebotAktualisierenActivity extends AppCompatActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(AngebotAktualisierenActivity.this);
 
                 // Set a title for alert dialog
-                builder.setTitle("Select your answer.");
+                builder.setTitle("Angebot löschen");
 
                 // Ask the final question
-                builder.setMessage("Are you sure to hide?");
+                builder.setMessage("Sind Sie sicher?");
 
                 // Set the alert dialog yes button click listener
-                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                builder.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // Do something when user clicked the Yes button
@@ -128,7 +130,7 @@ public class AngebotAktualisierenActivity extends AppCompatActivity {
                 });
 
                 // Set the alert dialog no button click listener
-                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                builder.setNegativeButton("Nein", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // Do something when No button clicked

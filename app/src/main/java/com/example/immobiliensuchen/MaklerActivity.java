@@ -27,12 +27,12 @@ import java.util.List;
 
 public class MaklerActivity extends AppCompatActivity {
 
-    static final int REQUEST_CODE = 0;
+    private static final String TAG = "MaklerActivity";
+    private static final int REQUEST_CODE = 0;
     private final String className = this.getClass().getSimpleName();
 
-    Button neuAngebotButton, angebotVerwaltenButton;
-    ArrayList<Angebot> angebotContainer = new ArrayList<>();
-    Angebot neuesAngebot;
+    private Button neuAngebotButton, angebotVerwaltenButton;
+    private ArrayList<Angebot> angebotContainer = new ArrayList<>();
 
 
     @Override

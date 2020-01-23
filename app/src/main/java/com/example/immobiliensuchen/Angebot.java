@@ -4,7 +4,6 @@ import android.os.Parcelable;
 import android.os.Parcel;
 
 import java.util.ArrayList;
-import java.util.List;
 
 class Angebot implements Parcelable {
 

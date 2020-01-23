@@ -20,6 +20,7 @@ import java.io.File;
 
 public class AngebotActivity extends AppCompatActivity {
 
+    private static final String TAG = "AngebotActivity";
     private static final String pathToPicture = Environment.getExternalStorageDirectory().getAbsolutePath() + "/ImmobilienSuche/images";
     private Angebot angebot;
     private LinearLayout gallery, information;
