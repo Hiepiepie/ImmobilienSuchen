@@ -83,7 +83,7 @@ public class KundenActivity extends AppCompatActivity {
         int beitragID, favorit;
         String alleausgaben = "";
         angebotContainer = new ArrayList<>();
-        ArrayList<String> images;
+        ArrayList<String> images, nachrichten;
 
         try{
             File myFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+ "/ImmobilienSuche/Angebote.txt");
@@ -108,15 +108,20 @@ public class KundenActivity extends AppCompatActivity {
                 email = jsonObject.getString("Email");
                 beschreibung = jsonObject.getString("Beschreibung");
                 favorit = jsonObject.getInt("Favorit");
-                JSONArray jsonArrayImages;
+                JSONArray jsonArrayImages, jsonArrayNachrichten;
                 jsonArrayImages = jsonObject.getJSONArray("Images");
+                jsonArrayNachrichten = jsonObject.getJSONArray("Nachrichten");
 
                 images = new ArrayList<>();
                 for (int j = 0; j < jsonArrayImages.length(); j++){
                     images.add(jsonArrayImages.getString(j));
                 }
+                nachrichten = new ArrayList<>();
+                for (int j = 0; j < jsonArrayNachrichten.length(); j++){
+                    nachrichten.add(jsonArrayNachrichten.getString(j));
+                }
 
-                Angebot a = new Angebot(beitragID,art,stadt,preis,titel,email,beschreibung,favorit, images);
+                Angebot a = new Angebot(beitragID,art,stadt,preis,titel,email,beschreibung,favorit, images, nachrichten);
                 angebotContainer.add(a);
             }
         } catch (Exception e){
@@ -137,6 +142,7 @@ public class KundenActivity extends AppCompatActivity {
                 Angebot a = angebotContainer.get(i);
                 JSONObject object = new JSONObject();
                 JSONArray jsonArrayImages = new JSONArray();
+                JSONArray jsonArrayNachrichten = new JSONArray();
                 object.put("BeitragsID", a.getBeitragID());
                 object.put("Art", a.getArt());
                 object.put("Titel",a.getTitel());
@@ -151,6 +157,12 @@ public class KundenActivity extends AppCompatActivity {
                     jsonArrayImages.put(images.get(j));
                 }
                 object.put("Images", jsonArrayImages);
+
+                ArrayList<String> nachrichten = a.getNachricht();
+                for (int j = 0; j < nachrichten.size(); j++) {
+                    jsonArrayNachrichten.put(nachrichten.get(j));
+                }
+                object.put("Nachrichten", jsonArrayNachrichten);
                 jsonarray.put(object);
             }
             myOutWriter.write(jsonarray.toString());

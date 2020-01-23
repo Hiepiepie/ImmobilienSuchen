@@ -30,6 +30,17 @@
                 app:srcCompat="@drawable/delete"
                 android:tint="@color/colorWhite"/>
 
+            <ImageView
+                android:id="@+id/mail"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="right"
+                android:layout_marginRight="40dp"
+                android:clickable="true"
+                android:focusable="true"
+                app:srcCompat="@drawable/mail"
+                android:tint="@color/colorWhite"/>
+
         </androidx.appcompat.widget.Toolbar>
 
 

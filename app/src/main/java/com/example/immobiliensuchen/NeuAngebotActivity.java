@@ -6,7 +6,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.content.Context;
 import android.os.Environment;
-import android.util.Base64;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,44 +18,24 @@ import android.widget.RadioButton;
 import android.graphics.Bitmap;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.List;
 import android.net.Uri;
 
 import android.content.Intent;
-import java.io.FileDescriptor;
 import java.io.IOException;
-import android.app.Activity;
-import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.os.Bundle;
-import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
+
 
 public class NeuAngebotActivity extends AppCompatActivity {
 
@@ -63,14 +43,13 @@ public class NeuAngebotActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CODE = 100;
     private static final String TAG = "NeuAngebotActivity";
     private static final String FILE_NAME = "/ImmobilienSuche/Angebote.txt";
-    String titel, beschreibung, stadt, email;
-    String art;
-    double preis;
-    int beitragID, favorit;
-    ArrayList<String> images;
-    ArrayList<Bitmap> imagesBitmap;
-    RadioButton verkaufen, vermieten;
-    ImageView addPhoto;
+    private String titel, beschreibung, stadt, email, art;
+    private double preis;
+    private int beitragID, favorit;
+    private ArrayList<String> images;
+    private ArrayList<Bitmap> imagesBitmap;
+    private RadioButton verkaufen, vermieten;
+    private ImageView addPhoto;
     private LayoutInflater layoutInflater;
     private LinearLayout gallery;
     private Bitmap selectedImage;

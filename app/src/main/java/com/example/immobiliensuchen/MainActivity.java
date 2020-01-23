@@ -38,7 +38,8 @@ import androidx.appcompat.app.AppCompatActivity;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
-    private static final int PERMISSION_REQUEST_CODE = 100;
+    private static final int WRITE_PERMISSION_REQUEST_CODE = 100;
+    private static final int READ_PERMISSION_REQUEST_CODE = 200;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +51,10 @@ public class MainActivity extends AppCompatActivity {
 
 
         if(checkWritePermission()) {
+            if(checkReadPermission())
             checkFile(); //create "ImmobilienSuche" Directory in External Storage and create "Angebot.txt" with dummies Angebote
+            else
+                requestReadPermission();
         }
         else {
             requestWritePermission();
@@ -107,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
         if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             Toast.makeText(MainActivity.this, "Write External Storage permission allows us to create files. Please allow this permission in App Settings.", Toast.LENGTH_LONG).show();
         } else {
-            ActivityCompat.requestPermissions(MainActivity.this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_PERMISSION_REQUEST_CODE);
         }
     }
 
@@ -115,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
         if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
             Toast.makeText(MainActivity.this, "Write External Storage permission allows us to create files. Please allow this permission in App Settings.", Toast.LENGTH_LONG).show();
         } else {
-            ActivityCompat.requestPermissions(MainActivity.this, new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, READ_PERMISSION_REQUEST_CODE);
         }
     }
 
@@ -172,6 +176,7 @@ public class MainActivity extends AppCompatActivity {
                 OutputStreamWriter myOutWriter = new OutputStreamWriter(fos);
 
                 JSONArray jsonArrayImages = new JSONArray();
+                JSONArray jsonArrayNachrichten = new JSONArray();
                 JSONArray jsonarray = new JSONArray();
 
                 for (int i = 0; i < images.size(); i++) {
@@ -190,6 +195,7 @@ public class MainActivity extends AppCompatActivity {
                     object.put("Beschreibung", a.getBeschreibung());
                     object.put("Favorit", a.getFavorit());
                     object.put("Images", jsonArrayImages);
+                    object.put("Nachrichten", jsonArrayNachrichten);
                     jsonarray.put(object);
                 }
                 myOutWriter.write(jsonarray.toString());
@@ -208,7 +214,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
-            case PERMISSION_REQUEST_CODE:
+            case WRITE_PERMISSION_REQUEST_CODE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this,"Permission GRANTED", Toast.LENGTH_SHORT ).show();
+                    if (checkReadPermission())
+                    checkFile();
+                    else
+                        requestReadPermission();
+                } else {
+                    Toast.makeText(this,"Permission DENIED", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case READ_PERMISSION_REQUEST_CODE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(this,"Permission GRANTED", Toast.LENGTH_SHORT ).show();
                     checkFile();

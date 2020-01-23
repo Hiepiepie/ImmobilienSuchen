@@ -16,6 +16,23 @@ class Angebot implements Parcelable {
     private double preis;
     private ArrayList<String> images;
 
+
+    private ArrayList<String> nachrichten;
+
+    public Angebot(int BeitragID, String art, String stadt, double preis, String titel, String email, String beschreibung, int favorit, ArrayList<String> images, ArrayList<String> nachrichten)
+    {
+        this.beitragID = BeitragID;
+        this.art = art;
+        this.beschreibung= beschreibung;
+        this.titel = titel;
+        this.stadt = stadt;
+        this.preis = preis;
+        this.email = email;
+        this.images = images;
+        this.favorit = favorit;  //0 = false, 1 = true;
+        this.nachrichten = nachrichten;
+    }
+
     public Angebot(int BeitragID, String art, String stadt, double preis, String titel, String email, String beschreibung, int favorit, ArrayList<String> images)
     {
         this.beitragID = BeitragID;
@@ -27,6 +44,7 @@ class Angebot implements Parcelable {
         this.email = email;
         this.images = images;
         this.favorit = favorit;  //0 = false, 1 = true;
+        this.nachrichten = new ArrayList<>();
     }
 
     //Getter und Setter
@@ -103,6 +121,14 @@ class Angebot implements Parcelable {
         this.images = images;
     }
 
+    public ArrayList<String> getNachricht() {
+        return nachrichten;
+    }
+
+    public void setNachricht(ArrayList<String> nachrichten) {
+        this.nachrichten = nachrichten;
+    }
+
 
     public Angebot(Parcel in){
         beitragID = in.readInt();
@@ -115,6 +141,8 @@ class Angebot implements Parcelable {
         favorit = in.readInt();
         images = new ArrayList<>();
         in.readList(images, String.class.getClassLoader());
+        nachrichten = new ArrayList<>();
+        in.readList(nachrichten, String.class.getClassLoader());
     }
 
     @Override
@@ -133,6 +161,7 @@ class Angebot implements Parcelable {
         out.writeString(beschreibung);
         out.writeInt(favorit);
         out.writeList(images);
+        out.writeList(nachrichten);
     }
 
     public static final Parcelable.Creator<Angebot> CREATOR = new Parcelable.Creator<Angebot>() {

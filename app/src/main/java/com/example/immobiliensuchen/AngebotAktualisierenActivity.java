@@ -4,18 +4,20 @@ import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class AngebotAktualisierenActivity extends AppCompatActivity {
 
@@ -27,7 +29,7 @@ public class AngebotAktualisierenActivity extends AppCompatActivity {
     private int beitragID, favorit;
 
     private RadioButton verkaufen,vermieten;
-    private ImageView deleteView;
+    private ImageView deleteView, mailView;
     private EditText stadtEditText, titelEditText, beschreibungEditText,emailEditText, preisEditText;
 
 
@@ -43,6 +45,7 @@ public class AngebotAktualisierenActivity extends AppCompatActivity {
         verkaufen = findViewById(R.id.verkaufenButton);
         vermieten = findViewById(R.id.vermietenButton);
         deleteView = findViewById(R.id.delete);
+        mailView = findViewById(R.id.mail);
 
         Button abschickenButton = (Button) findViewById(R.id.buttonAbschicken);
         Button abbrechenButton = (Button) findViewById(R.id.buttonCancel);
@@ -142,6 +145,37 @@ public class AngebotAktualisierenActivity extends AppCompatActivity {
                 AlertDialog dialog = builder.create();
                 // Display the alert dialog on interface
                 dialog.show();
+            }
+        });
+
+        mailView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                LayoutInflater inflater= LayoutInflater.from(AngebotAktualisierenActivity.this);
+                View view=inflater.inflate(R.layout.nachrichten_list, null);
+
+                StringBuilder nachrichten = new StringBuilder();
+
+                if(angebot.getNachricht().size() >0 ){
+                    for(int i = 0; i < angebot.getNachricht().size(); i++ ){
+                        nachrichten.append((i+1) + ". Nachricht : ");
+                        nachrichten.append(angebot.getNachricht().get(i));
+                    }
+                    TextView textview=(TextView)view.findViewById(R.id.textmsg);
+                    textview.setText(nachrichten);
+
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(AngebotAktualisierenActivity.this);
+                    alertDialog.setTitle("Besichtigungwünsche");
+                    //alertDialog.setMessage("Here is a really long message.");
+                    alertDialog.setView(view);
+                    alertDialog.show();
+                }
+                else {
+                    Toast.makeText(AngebotAktualisierenActivity.this,"Kein Nachricht", Toast.LENGTH_SHORT).show();
+                }
+
+
             }
         });
     }
