@@ -60,6 +60,7 @@ import android.widget.ImageView;
 public class NeuAngebotActivity extends AppCompatActivity {
 
     private static final String pathToPicture = Environment.getExternalStorageDirectory().getAbsolutePath() + "/ImmobilienSuche/images";
+    private static final int PERMISSION_REQUEST_CODE = 100;
     private static final String TAG = "NeuAngebotActivity";
     private static final String FILE_NAME = "/ImmobilienSuche/Angebote.txt";
     String titel, beschreibung, stadt, email;
@@ -227,8 +228,11 @@ public class NeuAngebotActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int item) {
 
                 if (options[item].equals("Take Photo")) {
-                    Intent takePicture = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(takePicture, 0);
+                    if(checkCameraPermission()){
+                        Intent takePicture = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                        startActivityForResult(takePicture, 0);
+                    }
+                   else requestCameraPermission();
 
                 } else if (options[item].equals("Choose from Gallery")) {
                     Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -266,6 +270,37 @@ public class NeuAngebotActivity extends AppCompatActivity {
             Log.d(TAG, "File not found: " + e.getMessage());
         } catch (IOException e) {
             Log.d(TAG, "Error accessing file: " + e.getMessage());
+        }
+    }
+
+    private boolean checkCameraPermission() {
+        if (ContextCompat.checkSelfPermission(NeuAngebotActivity.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED){
+            return true;
+        } else{
+            return false;
+        }
+    }
+
+    private void requestCameraPermission(){
+        if (ActivityCompat.shouldShowRequestPermissionRationale(NeuAngebotActivity.this, Manifest.permission.CAMERA)) {
+            Toast.makeText(NeuAngebotActivity.this, "Write External Storage permission allows us to create files. Please allow this permission in App Settings.", Toast.LENGTH_LONG).show();
+        } else {
+            ActivityCompat.requestPermissions(NeuAngebotActivity.this, new String[]{Manifest.permission.CAMERA}, PERMISSION_REQUEST_CODE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_CODE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this,"Permission GRANTED", Toast.LENGTH_SHORT ).show();
+                    Intent takePicture = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                    startActivityForResult(takePicture, 0);
+                } else {
+                    Toast.makeText(this,"Permission DENIED", Toast.LENGTH_SHORT).show();
+                }
+                break;
         }
     }
 }
